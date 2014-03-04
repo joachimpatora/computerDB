@@ -7,11 +7,17 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPConfig;
+
 public class DAOFactory {
+	
+	Logger logger = LoggerFactory.getLogger(DAOFactory.class);
 
 	private static volatile DAOFactory instance = null;
 	private ComputerDao computerdao = null;
 	private CompanyDao companydao = null;
+	BoneCP connectionPool;
 
 	public final static DAOFactory getInstance() {
 		if (DAOFactory.instance == null) {
@@ -41,26 +47,29 @@ public class DAOFactory {
 	private void initDriver() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			BoneCPConfig config = new BoneCPConfig();
+			config.setJdbcUrl("jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull");
+			config.setUsername("jee-cdb");
+			config.setPassword("password");	
+			connectionPool = new BoneCP(config); 
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
 	public Connection getConnection() {
-		Connection conn = null;
+		Connection connection;
 		try {
-			conn = DriverManager
-					.getConnection("jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&"
-							+ "user=jee-cdb&password=password");
-		} catch (SQLException ex) {
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			connection = connectionPool.getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		return conn;
+		return connection;
 	}
 }

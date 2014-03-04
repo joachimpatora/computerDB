@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
@@ -14,9 +13,17 @@ import com.excilys.formation.projet.om.*;
 
 public class ComputerDao {
 	
+	final private Long ASC = 0L;
+	final private Long DESC = 1L;
+	
+	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
+	
 	private Connection conn = null;
 	private int nbofcomputers = 0;
 	private String searchCache = "";
+	Long old_offset = 0L;
+	Long orderByDir = ASC;
+	String old_orderBy = "";
 	
 	public ComputerDao()
 	{
@@ -28,23 +35,84 @@ public class ComputerDao {
 		this.conn = connect;
 	}
 	
-	public ArrayList<Computer> getAll(Long offset, Long noOfRecords, String searchStr)
+	public ArrayList<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy)
 	{
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
-		if(offset!=0)
+		String OrderByDirection = "ASC";
+		
+		
+		if(searchStr!="")
 		{
-			if(!searchCache.equals(""))
+			if(offset!=0)
 			{
-				searchStr = searchCache;
+				old_offset = offset;
+				if(!searchCache.equals(""))
+				{
+					searchStr = searchCache;
+				}
 			}
+			else if((old_offset != 0)&&(offset==0))
+			{
+				if(!searchCache.equals(""))
+				{
+					searchStr = searchCache;
+				}
+			}
+		}
+		else
+		{
+			searchCache = "";
+			old_offset = 0L;
 		}
 		try
 		{
-			stmt = conn.prepareStatement("SELECT SQL_CALC_FOUND_ROWS computer.id, computer.name, introduced, discontinued, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id WHERE computer.name LIKE ? LIMIT ?, ? ; ");
+			String sqlFormat;
+			final String SQL = "SELECT SQL_CALC_FOUND_ROWS computer.id, computer.name, introduced, discontinued, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id WHERE computer.name LIKE ? ORDER BY %s %s LIMIT ?, ? ; ";
+			
+			if(orderBy != null)
+			{
+				if(orderBy.equals(""))
+				{
+					 orderBy = old_orderBy;
+					 orderByDir = Math.abs(orderByDir -1L);
+				}
+				if(orderBy.equals("Name"))
+				{
+					old_orderBy = orderBy;
+					sqlFormat = String.format(SQL, "computer.name", OrderByDirection);
+				}
+				else if(orderBy.equals("IntroDate"))
+				{
+					old_orderBy = orderBy;
+					sqlFormat = String.format(SQL, "computer.introduced", OrderByDirection);
+				}
+				else if(orderBy.equals("OutroDate"))
+				{
+					old_orderBy = orderBy;
+					sqlFormat = String.format(SQL, "computer.discontinued", OrderByDirection);
+				}
+				else if(orderBy.equals("Company"))
+				{
+					old_orderBy = orderBy;
+					sqlFormat = String.format(SQL, "computer.company_id", OrderByDirection);
+				}
+				else
+				{
+					old_orderBy = orderBy;
+					sqlFormat = String.format(SQL, "computer.id", OrderByDirection);
+				}
+			}
+			else
+			{
+				old_orderBy = orderBy;
+				sqlFormat = String.format(SQL, "computer.id", OrderByDirection);
+			}
+			stmt = conn.prepareStatement(sqlFormat);
 			if(searchStr!=null)
 			{
+				
 				searchStr = "%"+searchStr+"%";
 				searchCache = searchStr;
 				stmt.setString(1,searchStr);
@@ -53,9 +121,20 @@ public class ComputerDao {
 			{
 				stmt.setString(1,"%"+"%");
 			}
+			
 			stmt.setLong(2,offset);
 			stmt.setLong(3,noOfRecords);
 			rs = stmt.executeQuery();
+			if(orderByDir == ASC)
+			{
+				orderByDir = DESC;
+				OrderByDirection = "ASC";
+			}
+			else
+			{
+				orderByDir = ASC;
+				OrderByDirection = "DESC";
+			}
 			while(rs.next())
 			{
 				Computer computers = new Computer();
@@ -79,6 +158,7 @@ public class ComputerDao {
             {
             	this.nbofcomputers = rs.getInt(1);
             }
+            
                 
 		}
 		catch (Exception e)
@@ -129,7 +209,7 @@ public class ComputerDao {
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				logger.error("Erreur lors du traitement SQL.", e);
 			}
 			finally
 			{
@@ -162,7 +242,7 @@ public class ComputerDao {
 			stmt.executeUpdate();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Erreur lors du traitement SQL de suppression.", e);
 		} finally {
 			try {
 				if (rs != null)

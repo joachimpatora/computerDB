@@ -12,6 +12,6 @@
 <body>
 	<header class="topbar">
 		<h1 class="fill">
-			<a href="Complist"> Application - Computer Database </a>
+			<a href="Complist?main=accueil"> Application - Computer Database </a>
 		</h1>
 	</header>

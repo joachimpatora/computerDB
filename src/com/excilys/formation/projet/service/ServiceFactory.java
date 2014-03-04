@@ -32,7 +32,6 @@ public class ServiceFactory {
 	}
 
 	public CompanyService getCompanyService() {
-		// TODO Auto-generated method stub
 		return companyService;
 	}
 

@@ -52,7 +52,7 @@
 		<div class="actions">
 			<input type="submit" value="Delete" class="btn primary" onClick='this.form.action.value="DELETE"'>
 			or <input type="submit" value="Edit" class="btn primary" onClick='this.form.action.value="EDIT"'>
-			or <a href="Complist" class="btn">Cancel</a>
+			or <a href="Complist?main=accueil" class="btn">Cancel</a>
 		</div>
 	</form>
 </section>

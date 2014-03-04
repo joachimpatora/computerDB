@@ -14,7 +14,7 @@ import com.excilys.formation.projet.om.Company;
 
 public class CompanyDao {
 	
-	private Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+	Logger logger = LoggerFactory.getLogger(CompanyDao.class);
 	
 	private Connection conn = null;
 	
@@ -83,7 +83,7 @@ public class CompanyDao {
 			stmt.executeUpdate();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Erreur lors du traitement SQL.", e);
 		} finally {
 			try {
 				if (rs != null)

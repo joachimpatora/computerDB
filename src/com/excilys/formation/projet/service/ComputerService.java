@@ -30,8 +30,8 @@ public class ComputerService {
 		return computerDao.get(id);
 	}
 	
-	public List<Computer> getAll(Long offset, Long noOfRecords, String searchStr) {
-		return computerDao.getAll(offset, noOfRecords, searchStr);
+	public List<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) {
+		return computerDao.getAll(offset, noOfRecords, searchStr, orderBy);
 	}
 	
 	public int getCount() {

@@ -1,3 +1,3 @@
 <%
-response.sendRedirect("Complist");
+response.sendRedirect("Complist?main=accueil");
 %>

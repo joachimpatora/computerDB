@@ -64,10 +64,11 @@ table.computers .header a {
 
 #pagination {
     position: relative;
+    float: left;
 }
 
 #pagination ul {
-    position: absolute;
+    position: relative;
     right: 0;
 }
 
