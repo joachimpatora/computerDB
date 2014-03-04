@@ -1,7 +1,11 @@
 package com.excilys.formation.projet.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
-import com.excilys.formation.projet.service.Service;
+import com.excilys.formation.projet.service.CompanyService;
+import com.excilys.formation.projet.service.ComputerService;
+import com.excilys.formation.projet.service.ServiceFactory;
 
 @WebServlet("/Controller")
 public class Controller extends HttpServlet{
@@ -21,8 +27,9 @@ public class Controller extends HttpServlet{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	Service serv = new Service();
-	
+	ComputerService computerService = ServiceFactory.getInstance().getComputerService();
+	CompanyService companyService = ServiceFactory.getInstance().getCompanyService();
+		
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException 
 	{	
@@ -34,7 +41,7 @@ public class Controller extends HttpServlet{
 		computer.setCompany(request.getParameter("company"));
 		
 		try {
-			serv.getDaoFactory().addComputer(computer);
+			computerService.add(computer);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,17 +53,19 @@ public class Controller extends HttpServlet{
 			throws ServletException, IOException {
 		if(request.getParameter("id").equals("2"))
 		{
-			ArrayList<Company> liste = serv.getDaoFactory().getCompanyList();
+			List<Company> liste = companyService.getAll();
 	        request.setAttribute("listComp", liste);
 	        this.getServletContext().getRequestDispatcher( "/addComputer.jsp" ).forward( request, response );
 		}
 		else if(request.getParameter("id").equals("1"))
 		{
 			String compid = request.getParameter("compId");
-			Computer computer = serv.getDaoFactory().getComputer(new Long(compid));
+			Computer computer = computerService.get(new Long(compid));
 			request.setAttribute("computer", computer);
-			ArrayList<Company> liste = serv.getDaoFactory().getCompanyList();
+			List<Company> liste = companyService.getAll();
+			
 	        request.setAttribute("listComp", liste);
+	        
 			this.getServletContext().getRequestDispatcher("/editComputer.jsp").forward(request, response);		
 		}
 	}

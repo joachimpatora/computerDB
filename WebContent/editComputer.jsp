@@ -4,9 +4,10 @@
 
 	<h1>Edit Computer</h1>
 	<h2>You are editing ${computer.getName()}</h2>
-	<form action="EditControl" method="POST">
+	<form action="EditControl" method="POST" name="computeredition">
 		<fieldset>
 			<input type="hidden" value="${computer.getId()}" name="hiddenid">
+			<input type="hidden" value="" name="action">
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
@@ -49,10 +50,9 @@
 			</div>
 		</fieldset>
 		<div class="actions">
-			<input type="submit" value="Delete" class="btn primary">
-			or <input type="submit" value="Edit" class="btn primary">
+			<input type="submit" value="Delete" class="btn primary" onClick='this.form.action.value="DELETE"'>
+			or <input type="submit" value="Edit" class="btn primary" onClick='this.form.action.value="EDIT"'>
 			or <a href="Complist" class="btn">Cancel</a>
-			
 		</div>
 	</form>
 </section>

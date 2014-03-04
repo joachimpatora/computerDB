@@ -1,5 +1,8 @@
 package com.excilys.formation.projet.om;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Company {
 	String name;
 	Long id;

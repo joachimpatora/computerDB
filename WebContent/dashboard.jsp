@@ -7,7 +7,7 @@
 	<div id="actions">
 		<form action="Complist" method="POST" id="searchform">
 			<input type="search" id="searchbox" name="search"
-				value="" placeholder="Search name">
+				value="${search}" placeholder="Search name">
 			<input type="submit" id="searchsubmit"
 				value="Filter by name"
 				class="btn primary">

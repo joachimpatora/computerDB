@@ -1,0 +1,16 @@
+.classpath
+build/
+.settings/
+bin/
+target/
+*/.classpath
+*.orig
+*~
+*/.classpath
+*/build/
+*/.settings/
+*/bin/
+*/target/
+*/*/.classpath
+*/*.orig
+*/*~
