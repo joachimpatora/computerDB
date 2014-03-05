@@ -60,6 +60,7 @@ public class Complist extends HttpServlet {
 		Long recordsPerPage = 10L;
 		List<Computer> liste;
 		String orderBy = "";
+		
 		if((request.getParameter("orderBy")) != null)
 		{
 			orderBy = request.getParameter("orderBy");
