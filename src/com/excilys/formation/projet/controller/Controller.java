@@ -27,6 +27,8 @@ public class Controller extends HttpServlet{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	Logger logger = LoggerFactory.getLogger(Complist.class);
+	
 	ComputerService computerService = ServiceFactory.getInstance().getComputerService();
 	CompanyService companyService = ServiceFactory.getInstance().getCompanyService();
 		
@@ -51,22 +53,26 @@ public class Controller extends HttpServlet{
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		if(request.getParameter("id").equals("2"))
-		{
-			List<Company> liste = companyService.getAll();
-	        request.setAttribute("listComp", liste);
-	        this.getServletContext().getRequestDispatcher( "/addComputer.jsp" ).forward( request, response );
-		}
-		else if(request.getParameter("id").equals("1"))
-		{
-			String compid = request.getParameter("compId");
-			Computer computer = computerService.get(new Long(compid));
-			request.setAttribute("computer", computer);
-			List<Company> liste = companyService.getAll();
-			
-	        request.setAttribute("listComp", liste);
-	        
-			this.getServletContext().getRequestDispatcher("/editComputer.jsp").forward(request, response);		
+		try{
+			if(request.getParameter("id").equals("2"))
+			{
+				List<Company> liste = companyService.getAll();
+		        request.setAttribute("listComp", liste);
+		        this.getServletContext().getRequestDispatcher( "/addComputer.jsp" ).forward( request, response );
+			}
+			else if(request.getParameter("id").equals("1"))
+			{
+				String compid = request.getParameter("compId");
+				Computer computer = computerService.get(new Long(compid));
+				request.setAttribute("computer", computer);
+				List<Company> liste = companyService.getAll();
+				
+		        request.setAttribute("listComp", liste);
+		        
+				this.getServletContext().getRequestDispatcher("/editComputer.jsp").forward(request, response);		
+			}
+		} catch(Exception e) {
+			logger.error("Mauvaise édition", e);
 		}
 	}
 	

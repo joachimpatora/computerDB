@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formation.projet.dao.CompanyDao;
 import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.service.ComputerService;
 import com.excilys.formation.projet.service.ServiceFactory;
@@ -39,17 +38,19 @@ public class Complist extends HttpServlet {
 		if (request.getParameter("page") != null) {
 			page = Long.parseLong(request.getParameter("page"));
 		}
-
-		List<Computer> liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, request.getParameter("search"), request.getParameter("orderBy"));
-		int noOfRecords = computerService.getCount();
-		int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
-		request.setAttribute("totalNbOfComp", noOfRecords);
-		request.setAttribute("listOfComputers", liste);
-		request.setAttribute("noOfPages", noOfPages);
-		request.setAttribute("currentPage", page);
-		request.setAttribute("search",request.getParameter("search"));
-		this.getServletContext().getRequestDispatcher("/dashboard.jsp")
-				.forward(request, response);
+		try {
+			List<Computer> liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, request.getParameter("search"), request.getParameter("orderBy"));
+			int noOfRecords = computerService.getCount();
+			int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+			request.setAttribute("totalNbOfComp", noOfRecords);
+			request.setAttribute("listOfComputers", liste);
+			request.setAttribute("noOfPages", noOfPages);
+			request.setAttribute("currentPage", page);
+			request.setAttribute("search",request.getParameter("search"));
+			this.getServletContext().getRequestDispatcher("/dashboard.jsp").forward(request, response);
+		} catch (Exception e) {
+			logger.error("Mauvaise récupération des ordinateurs", e);
+		}
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -63,32 +64,33 @@ public class Complist extends HttpServlet {
 		{
 			orderBy = request.getParameter("orderBy");
 		}
-		else
-		{
-			orderBy = "";
+		try {
+			
+			if (request.getParameter("page") != null) {
+				page = Long.parseLong(request.getParameter("page"));
+			}
+			if ((request.getParameter("main") != null)&&(request.getParameter("main").equals("accueil")))
+			{
+				liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, null, null);
+			}
+			else if(request.getParameter("search") != null)
+			{
+				liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, request.getParameter("search"), orderBy);
+			}
+			else
+			{
+				liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, "", orderBy);
+			}
+			int noOfRecords = computerService.getCount();
+			int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+			request.setAttribute("totalNbOfComp", noOfRecords);
+			request.setAttribute("listOfComputers", liste);
+			request.setAttribute("noOfPages", noOfPages);
+			request.setAttribute("currentPage", page);
+			request.setAttribute("search",request.getParameter("search"));
+			this.getServletContext().getRequestDispatcher("/dashboard.jsp").forward(request, response);
+		} catch (Exception e) {
+			logger.error("Mauvaise récupération des ordinateurs", e);
 		}
-		if ((request.getParameter("main") != null)&&(request.getParameter("main").equals("accueil")))
-		{
-			liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, "", orderBy);
-		}
-		if (request.getParameter("page") != null) {
-			page = Long.parseLong(request.getParameter("page"));
-		}
-		if ((request.getParameter("main") != null)&&(request.getParameter("main").equals("accueil")))
-		{
-			liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, "", orderBy);
-		}
-		else
-		{
-			liste = computerService.getAll((page - 1)* recordsPerPage, recordsPerPage, request.getParameter("search"), orderBy);
-		}
-		int noOfRecords = computerService.getCount();
-		int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
-		request.setAttribute("totalNbOfComp", noOfRecords);
-		request.setAttribute("listOfComputers", liste);
-		request.setAttribute("noOfPages", noOfPages);
-		request.setAttribute("currentPage", page);
-		request.setAttribute("search",request.getParameter("search"));
-		this.getServletContext().getRequestDispatcher("/dashboard.jsp").forward(request, response);
 	}
 }

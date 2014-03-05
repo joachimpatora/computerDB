@@ -15,35 +15,42 @@ public class ComputerDao {
 	
 	final private Long ASC = 0L;
 	final private Long DESC = 1L;
+	private static ComputerDao _instance = null;
 	
 	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
 	
-	private Connection conn = null;
 	private int nbofcomputers = 0;
 	private String searchCache = "";
 	Long old_offset = 0L;
 	Long orderByDir = ASC;
 	String old_orderBy = "";
+	String OrderByDirection = "ASC";
 	
-	public ComputerDao()
+	private ComputerDao()
 	{
-		super();
+		
 	}
 	
-	public ComputerDao(Connection connect)
-	{
-		this.conn = connect;
+	synchronized public static ComputerDao getInstance() {
+		if (_instance == null) {
+			_instance = new ComputerDao();
+		}
+		return _instance;
 	}
 	
-	public ArrayList<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy)
+	public ArrayList<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) throws SQLException
 	{
+		Connection conn = ConnectionDB.getConnection();
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
-		String OrderByDirection = "ASC";
 		
-		
-		if(searchStr!="")
+		if(searchStr == null)
+		{
+			searchStr = "";
+			searchCache = "";
+		}
+		else if((searchStr != null)&&(!searchStr.equals("")))
 		{
 			if(offset!=0)
 			{
@@ -61,7 +68,11 @@ public class ComputerDao {
 				}
 			}
 		}
-		else
+		else if(!searchCache.equals(""))
+		{
+			searchStr = searchCache;
+		}
+		else 
 		{
 			searchCache = "";
 			old_offset = 0L;
@@ -77,6 +88,19 @@ public class ComputerDao {
 				{
 					 orderBy = old_orderBy;
 					 orderByDir = Math.abs(orderByDir -1L);
+				}
+				else
+				{
+					if(orderByDir == ASC)
+					{
+						orderByDir = DESC;
+						OrderByDirection = "ASC";
+					}
+					else
+					{
+						orderByDir = ASC;
+						OrderByDirection = "DESC";
+					}
 				}
 				if(orderBy.equals("Name"))
 				{
@@ -106,7 +130,7 @@ public class ComputerDao {
 			}
 			else
 			{
-				old_orderBy = orderBy;
+				old_orderBy = "";
 				sqlFormat = String.format(SQL, "computer.id", OrderByDirection);
 			}
 			stmt = conn.prepareStatement(sqlFormat);
@@ -125,16 +149,6 @@ public class ComputerDao {
 			stmt.setLong(2,offset);
 			stmt.setLong(3,noOfRecords);
 			rs = stmt.executeQuery();
-			if(orderByDir == ASC)
-			{
-				orderByDir = DESC;
-				OrderByDirection = "ASC";
-			}
-			else
-			{
-				orderByDir = ASC;
-				OrderByDirection = "DESC";
-			}
 			while(rs.next())
 			{
 				Computer computers = new Computer();
@@ -157,9 +171,7 @@ public class ComputerDao {
             if(rs.next())
             {
             	this.nbofcomputers = rs.getInt(1);
-            }
-            
-                
+            }  
 		}
 		catch (Exception e)
 		{
@@ -176,6 +188,7 @@ public class ComputerDao {
 				{
 					stmt.close();
 				}
+				conn.close();
 			} catch (SQLException e) {}
 		}
 		return list;
@@ -186,8 +199,9 @@ public class ComputerDao {
 		return this.nbofcomputers;
 	}
 	
-	public Computer get(Long id)
+	public Computer get(Long id) throws SQLException
 	{
+		Connection conn = ConnectionDB.getConnection();
 		Computer computer = new Computer();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -222,14 +236,16 @@ public class ComputerDao {
 					{
 						stmt.close();
 					}
+					conn.close();
 				} catch (SQLException e) {}
 			}
 		}
 		return computer;
 	}
 	
-	public void delete(Long id)
+	public void delete(Long id) throws SQLException
 	{
+		Connection conn = ConnectionDB.getConnection();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		if(id == null)
@@ -253,11 +269,13 @@ public class ComputerDao {
 				{
 					stmt.close();
 				}
+				conn.close();
 			} catch (SQLException e) {}
 		}
 	}
 	
-	public void update(Computer computer){
+	public void update(Computer computer) throws SQLException{
+		Connection conn = ConnectionDB.getConnection();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		Long companyid = null;
@@ -310,12 +328,13 @@ public class ComputerDao {
 				{
 					stmt.close();
 				}
+				conn.close();
 			} catch (SQLException e) {}
 		}
 	}
 	
-	public void add(Computer computer) {
-		
+	public void add(Computer computer) throws SQLException {
+		Connection conn = ConnectionDB.getConnection();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		Long companyid = null;
@@ -367,6 +386,7 @@ public class ComputerDao {
 				{
 					stmt.close();
 				}
+				conn.close();
 			} catch (SQLException e) {}
 		}
 		

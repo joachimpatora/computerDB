@@ -1,6 +1,7 @@
 package com.excilys.formation.projet.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ public class EditControl extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	Logger logger = LoggerFactory.getLogger(Complist.class);
+	
 	ComputerService computerService = ServiceFactory.getInstance()
 			.getComputerService();
 
@@ -41,14 +44,23 @@ public class EditControl extends HttpServlet {
 					.getParameter("discontinuedDate"));
 			computer.setCompany(request.getParameter("company"));
 
-			computerService.update(computer);
+			try {
+				computerService.update(computer);
+			} catch (SQLException e) {
+				logger.error("Mauvais Update", e);
+			}
 
 			response.sendRedirect("Complist");
 
 		} else if ("DELETE".equals(request.getParameter("action"))) {
 
-			computerService.delete(Long.parseLong(request
-					.getParameter("hiddenid")));
+			try {
+				computerService.delete(Long.parseLong(request.getParameter("hiddenid")));
+			} catch (NumberFormatException e) {
+				logger.error("Delete raté", e);
+			} catch (SQLException e) {
+				logger.error("Delete raté", e);
+			}
 
 			response.sendRedirect("Complist");
 		}

@@ -10,26 +10,30 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.formation.projet.dao.ConnectionDB;
 import com.excilys.formation.projet.om.Company;
 
 public class CompanyDao {
 	
+	private static CompanyDao _instance = null;
+	
 	Logger logger = LoggerFactory.getLogger(CompanyDao.class);
 	
-	private Connection conn = null;
-	
-	public CompanyDao()
+	private CompanyDao()
 	{
-		super();
+		
 	}
 	
-	public CompanyDao(Connection connect)
-	{
-		this.conn = connect;
+	synchronized public static CompanyDao getInstance(){
+		if(_instance == null) {
+			_instance = new CompanyDao();
+		}
+		return _instance;
 	}
 	
-	public ArrayList<Company> getAll()
+	public ArrayList<Company> getAll() throws SQLException
 	{
+		Connection conn = ConnectionDB.getConnection();
 		ArrayList<Company> list = new ArrayList<Company>();
 		ResultSet rs = null;
 		Statement stmt = null;
@@ -63,15 +67,17 @@ public class CompanyDao {
 				{
 					stmt.close();
 				}
+				conn.close();
 			} catch (SQLException e) {}
 		}
 		return list;
 	}
 	
-	public void insereCompany(Company company) {
+	public void addCompany(Company company) throws SQLException {
 		
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
+		Connection conn = ConnectionDB.getConnection();
 		
 		try {
 			
@@ -94,6 +100,7 @@ public class CompanyDao {
 				{
 					stmt.close();
 				}
+				conn.close();
 			} catch (SQLException e) {}
 		}
 		

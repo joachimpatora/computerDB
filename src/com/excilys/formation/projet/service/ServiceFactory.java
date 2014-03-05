@@ -1,8 +1,5 @@
 package com.excilys.formation.projet.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ServiceFactory {
 
 	private static ServiceFactory instance = null;
