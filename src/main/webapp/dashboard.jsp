@@ -3,7 +3,9 @@
 <jsp:include page="include/header.jsp" />
 
 <section id="main">
+	<div id="message">${message}</div>
 	<h1 id="homeTitle">${totalNbOfComp} Computers found</h1>
+	
 	<div id="actions">
 		<form action="Complist" method="POST" id="searchform">
 			<input type="search" id="searchbox" name="search"
@@ -12,7 +14,6 @@
 				value="Filter by name"
 				class="btn primary">
 		</form>
-		<c:set var="edit" value="1"/>
 		<c:set var="add" value="2"/>
 		<form action="Controller" method="GET" id="buttonform">
 			<a class="btn success" id="add" href="Controller?id=<c:out value="${add}"/>">Add Computer</a>

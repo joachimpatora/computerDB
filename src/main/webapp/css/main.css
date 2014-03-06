@@ -64,7 +64,7 @@ table.computers .header a {
 
 #pagination {
     position: relative;
-    float: left;
+    text-align: center;
 }
 
 #pagination ul {
@@ -74,6 +74,11 @@ table.computers .header a {
 
 #pagination ul .current a {
     color: #666;
+}
+
+#message {
+	text-align: center;
+	color: #DF013A;
 }
 
 .col2 {

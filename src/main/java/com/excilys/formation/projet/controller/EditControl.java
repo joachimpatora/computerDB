@@ -26,13 +26,10 @@ public class EditControl extends HttpServlet {
 
 	Logger logger = LoggerFactory.getLogger(Complist.class);
 	
-	ComputerService computerService = ServiceFactory.getInstance()
-			.getComputerService();
+	ComputerService computerService = ServiceFactory.getInstance().getComputerService();
 
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		System.out.println(request.getParameter("action"));
 
 		if ("EDIT".equals(request.getParameter("action"))) {
 			Computer computer = new Computer();
@@ -49,8 +46,8 @@ public class EditControl extends HttpServlet {
 			} catch (SQLException e) {
 				logger.error("Mauvais Update", e);
 			}
-
-			response.sendRedirect("Complist");
+			request.setAttribute("message", "Modification effectuée");
+			this.getServletContext().getRequestDispatcher("/Complist").forward(request, response);
 
 		} else if ("DELETE".equals(request.getParameter("action"))) {
 
@@ -61,8 +58,8 @@ public class EditControl extends HttpServlet {
 			} catch (SQLException e) {
 				logger.error("Delete raté", e);
 			}
-
-			response.sendRedirect("Complist");
+			request.setAttribute("message", "Suppression réalisée.");
+			this.getServletContext().getRequestDispatcher("/Complist").forward(request, response);
 		}
 
 	}

@@ -8,6 +8,7 @@
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 </head>
 <body>
 	<header class="topbar">

@@ -18,7 +18,7 @@ public class ComputerDao {
 	private static ComputerDao _instance = null;
 	
 	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-	
+	private MonitorDbDao monitor = MonitorDbDao.getInstance();
 	private int nbofcomputers = 0;
 	private String searchCache = "";
 	Long old_offset = 0L;
@@ -134,6 +134,7 @@ public class ComputerDao {
 				sqlFormat = String.format(SQL, "computer.id", OrderByDirection);
 			}
 			stmt = conn.prepareStatement(sqlFormat);
+			monitor.addLog(conn, 0L, "List of computers transmitted.");
 			if(searchStr!=null)
 			{
 				
@@ -149,6 +150,7 @@ public class ComputerDao {
 			stmt.setLong(2,offset);
 			stmt.setLong(3,noOfRecords);
 			rs = stmt.executeQuery();
+			
 			while(rs.next())
 			{
 				Computer computers = new Computer();

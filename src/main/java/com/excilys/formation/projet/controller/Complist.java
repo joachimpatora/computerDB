@@ -27,13 +27,15 @@ public class Complist extends HttpServlet {
 	/**
 	 * 
 	 */
+	private final Long RECORDS_PER_PAGE = 15L;
+	
 	private static final long serialVersionUID = 1L;
 
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		
 		Long page = 1L;
-		Long recordsPerPage = 10L;
+		Long recordsPerPage = RECORDS_PER_PAGE;
 		
 		if (request.getParameter("page") != null) {
 			page = Long.parseLong(request.getParameter("page"));
@@ -57,7 +59,7 @@ public class Complist extends HttpServlet {
 			throws ServletException, IOException {
 		
 		Long page = 1L;
-		Long recordsPerPage = 10L;
+		Long recordsPerPage = RECORDS_PER_PAGE;
 		List<Computer> liste;
 		String orderBy = "";
 		
@@ -89,6 +91,7 @@ public class Complist extends HttpServlet {
 			request.setAttribute("noOfPages", noOfPages);
 			request.setAttribute("currentPage", page);
 			request.setAttribute("search",request.getParameter("search"));
+			request.setAttribute("message", request.getParameter("message"));
 			this.getServletContext().getRequestDispatcher("/dashboard.jsp").forward(request, response);
 		} catch (Exception e) {
 			logger.error("Mauvaise récupération des ordinateurs", e);

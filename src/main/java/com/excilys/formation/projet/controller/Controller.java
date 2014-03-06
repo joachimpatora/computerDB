@@ -48,7 +48,8 @@ public class Controller extends HttpServlet{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		response.sendRedirect("Complist");
+        request.setAttribute("message", "Ajout effectué");
+		this.getServletContext().getRequestDispatcher("/Complist").forward(request, response);
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -68,7 +69,6 @@ public class Controller extends HttpServlet{
 				List<Company> liste = companyService.getAll();
 				
 		        request.setAttribute("listComp", liste);
-		        
 				this.getServletContext().getRequestDispatcher("/editComputer.jsp").forward(request, response);		
 			}
 		} catch(Exception e) {
