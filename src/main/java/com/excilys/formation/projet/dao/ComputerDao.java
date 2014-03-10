@@ -222,6 +222,7 @@ public class ComputerDao {
 					computer.setDiscontinuedDate(rs.getString(4));
 					computer.setCompany(rs.getString(5));
 				}
+				monitor.addLog(conn, 0L, "Computer transmitted.");
 			}
 			catch (Exception e)
 			{
@@ -258,6 +259,7 @@ public class ComputerDao {
 			stmt.setLong(1,id);
 			
 			stmt.executeUpdate();
+			monitor.addLog(conn, 0L, "Computer deleted.");
 			
 		} catch (Exception e) {
 			logger.error("Erreur lors du traitement SQL de suppression.", e);
@@ -317,6 +319,7 @@ public class ComputerDao {
 			stmt.setLong(5, computer.getId());
 			
 			stmt.executeUpdate();
+			monitor.addLog(conn, 0L, "Computer updated.");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -375,6 +378,7 @@ public class ComputerDao {
 			}
 			
 			stmt.executeUpdate();
+			monitor.addLog(conn, 0L, "Computer added.");
 			
 		} catch (Exception e) {
 			e.printStackTrace();

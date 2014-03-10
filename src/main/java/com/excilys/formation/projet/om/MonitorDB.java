@@ -1,9 +1,5 @@
 package com.excilys.formation.projet.om;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class MonitorDB {
 	
 	String messageLog = "";

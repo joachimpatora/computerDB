@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ taglib tagdir="/WEB-INF/tags" prefix="paging" %>
 <jsp:include page="include/header.jsp" />
 
 <section id="main">
@@ -47,26 +47,27 @@
 			</c:forEach>
 		</tbody>
 	</table>
-	<div id="pagination">
-       <c:if test="${currentPage != 1}">
-      	 	<a href="Complist?page=${currentPage - 1}" onClick="this.form.search.value=${search}">Previous</a>
-   		</c:if>
+	<paging:Pagination></paging:Pagination>
+<!-- 	<div id="pagination"> -->
+<%--        <c:if test="${currentPage != 1}"> --%>
+<%--       	 	<a href="Complist?page=${currentPage - 1}" onClick="this.form.search.value=${search}">Previous</a> --%>
+<%--    		</c:if> --%>
    	
-         <c:forEach begin="1" end="${noOfPages}" var="i">
-             <c:choose>
-                 <c:when test="${currentPage == i}">
-                     ${i}
-                 </c:when>
-                 <c:otherwise>
-                     <a href="Complist?page=${i}" onClick="this.form.search.value=${search}">${i}</a>
-                 </c:otherwise>
-             </c:choose>
-         </c:forEach>
+<%--          <c:forEach begin="1" end="${noOfPages}" var="i"> --%>
+<%--              <c:choose> --%>
+<%--                  <c:when test="${currentPage == i}"> --%>
+<%--                      ${i} --%>
+<%--                  </c:when> --%>
+<%--                  <c:otherwise> --%>
+<%--                      <a href="Complist?page=${i}" onClick="this.form.search.value=${search}">${i}</a> --%>
+<%--                  </c:otherwise> --%>
+<%--              </c:choose> --%>
+<%--          </c:forEach> --%>
       
-         <c:if test="${currentPage < noOfPages}">
-			<a href="Complist?page=${currentPage + 1}" onClick="this.form.search.value=${search }">Next</a>
-		</c:if>
-    </div>
+<%--          <c:if test="${currentPage < noOfPages}"> --%>
+<%-- 			<a href="Complist?page=${currentPage + 1}" onClick="this.form.search.value=${search }">Next</a> --%>
+<%-- 		</c:if> --%>
+<!--     </div> -->
 		
 </section>
 

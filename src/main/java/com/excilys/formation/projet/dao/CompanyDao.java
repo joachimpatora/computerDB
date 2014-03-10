@@ -18,6 +18,7 @@ public class CompanyDao {
 	private static CompanyDao _instance = null;
 	
 	Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+	private MonitorDbDao monitor = MonitorDbDao.getInstance();
 	
 	private CompanyDao()
 	{
@@ -51,10 +52,13 @@ public class CompanyDao {
 				i = i + 2;
 				list.add(company);
 			}
+
+			monitor.addLog(conn, 0L, "Companies transmitted.");
 		}
 		catch (Exception e)
 		{
 			logger.error("Erreur lors de la récupération des Companies.", e);
+			monitor.addLog(conn, 2L, "Error while retrieving companies.");
 		}
 		finally
 		{
@@ -87,9 +91,11 @@ public class CompanyDao {
 			stmt.setString(2,company.getName());
 			
 			stmt.executeUpdate();
+			monitor.addLog(conn, 0L, "Company added.");
 			
 		} catch (Exception e) {
 			logger.error("Erreur lors du traitement SQL.", e);
+			monitor.addLog(conn, 2L, "Error while adding company.");
 		} finally {
 			try {
 				if (rs != null)
