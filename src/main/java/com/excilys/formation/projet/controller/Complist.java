@@ -9,28 +9,40 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.service.ComputerService;
-import com.excilys.formation.projet.service.ServiceFactory;
 
+@Controller
 @WebServlet("/Complist")
-public class Complist extends HttpServlet {
+public class Complist extends OverHttpRequest {
 	
-	Logger logger = LoggerFactory.getLogger(Complist.class);
+	final Logger logger = LoggerFactory.getLogger(Complist.class);
 
-	ComputerService computerService = ServiceFactory.getInstance().getComputerService();
+	@Autowired
+	private ComputerService computerService;
+	
+	public ComputerService getComputerService() {
+		return computerService;
+	}
 
-	/**
-	 * 
-	 */
+	public void setComputerService(ComputerService computerService) {
+		this.computerService = computerService;
+	}
+
 	private final Long RECORDS_PER_PAGE = 15L;
 	
 	private static final long serialVersionUID = 1L;
 
+	public Complist() {
+		super();
+	}
+	
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		

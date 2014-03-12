@@ -7,7 +7,7 @@
 
 	<h1>Add Computer</h1>
 	<div id="message">${message}</div>
-	<form action="Controller" id="formAdd" method="POST" >
+	<form action="printScrController" id="formAdd" method="POST" >
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
@@ -46,8 +46,6 @@
 		<div class="actions">
 			<a href="#" onclick="validationForm();" class="btn primary">Add</a>
 			or <a href="Complist" class="btn">Cancel</a>
-<!-- 			<input type="submit" value="Add" class="btn primary"> -->
-<!-- 			or <a href="Complist" class="btn">Cancel</a> -->
 		</div>
 	</form>
 </section>

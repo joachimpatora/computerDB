@@ -8,17 +8,21 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.formation.projet.om.*;
 
+@Repository
 public class ComputerDao {
 	
 	final private Long ASC = 0L;
 	final private Long DESC = 1L;
-	private static ComputerDao _instance = null;
+	
+	@Autowired
+	private MonitorDbDao monitor;
 	
 	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-	private MonitorDbDao monitor = MonitorDbDao.getInstance();
 	private int nbofcomputers = 0;
 	private String searchCache = "";
 	Long old_offset = 0L;
@@ -26,16 +30,9 @@ public class ComputerDao {
 	String old_orderBy = "";
 	String OrderByDirection = "ASC";
 	
-	private ComputerDao()
+	public ComputerDao()
 	{
-		
-	}
-	
-	synchronized public static ComputerDao getInstance() {
-		if (_instance == null) {
-			_instance = new ComputerDao();
-		}
-		return _instance;
+		super();
 	}
 	
 	public ArrayList<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) throws SQLException
@@ -338,6 +335,7 @@ public class ComputerDao {
 		}
 	}
 	
+	@Autowired
 	public void add(Computer computer) throws SQLException {
 		Connection conn = ConnectionDB.getConnection();
 		ResultSet rs = null ;

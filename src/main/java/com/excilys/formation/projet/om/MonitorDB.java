@@ -1,5 +1,8 @@
 package com.excilys.formation.projet.om;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MonitorDB {
 	
 	String messageLog = "";

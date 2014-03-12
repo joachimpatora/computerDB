@@ -9,27 +9,32 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.formation.projet.dao.ConnectionDB;
 import com.excilys.formation.projet.om.Company;
 
+@Repository
 public class CompanyDao {
 	
-	private static CompanyDao _instance = null;
-	
 	Logger logger = LoggerFactory.getLogger(CompanyDao.class);
-	private MonitorDbDao monitor = MonitorDbDao.getInstance();
 	
+	@Autowired
+	private MonitorDbDao monitor;
+	
+	public MonitorDbDao getMonitor() {
+		return monitor;
+	}
+
+	@Autowired
+	public void setMonitor(MonitorDbDao monitor) {
+		this.monitor = monitor;
+	}
+
 	private CompanyDao()
 	{
 		
-	}
-	
-	synchronized public static CompanyDao getInstance(){
-		if(_instance == null) {
-			_instance = new CompanyDao();
-		}
-		return _instance;
 	}
 	
 	public ArrayList<Company> getAll() throws SQLException

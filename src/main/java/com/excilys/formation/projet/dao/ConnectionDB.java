@@ -3,10 +3,14 @@ package com.excilys.formation.projet.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Repository;
+
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
+@Repository
 public class ConnectionDB {
+	
 	private static BoneCP connectionPool = null;
 	
 	public static void Initialize() throws SQLException{

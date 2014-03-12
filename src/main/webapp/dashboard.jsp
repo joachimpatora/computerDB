@@ -15,8 +15,8 @@
 				class="btn primary">
 		</form>
 		<c:set var="add" value="2"/>
-		<form action="Controller" method="GET" id="buttonform">
-			<a class="btn success" id="add" href="Controller?id=<c:out value="${add}"/>">Add Computer</a>
+		<form action="PrintScrController" method="GET" id="buttonform">
+			<a class="btn success" id="add" href="PrintScrController?id=<c:out value="${add}"/>">Add Computer</a>
 		</form>
 		
 	</div>
@@ -39,7 +39,7 @@
 			
 			<c:forEach items="${listOfComputers}" var="lstcomp">
 				<tr>
-					<td><a href="Controller?id=<c:out value="1"/>&compId=${lstcomp.getId()}" onclick="">${lstcomp.getName()}</a></td>
+					<td><a href="PrintScrController?id=<c:out value="1"/>&compId=${lstcomp.getId()}" onclick="">${lstcomp.getName()}</a></td>
 					<td>${lstcomp.getIntroducedDate()}</td>
 					<td>${lstcomp.getDiscontinuedDate()}</td>
 					<td>${lstcomp.getCompany()}</td>
@@ -48,26 +48,6 @@
 		</tbody>
 	</table>
 	<paging:Pagination></paging:Pagination>
-<!-- 	<div id="pagination"> -->
-<%--        <c:if test="${currentPage != 1}"> --%>
-<%--       	 	<a href="Complist?page=${currentPage - 1}" onClick="this.form.search.value=${search}">Previous</a> --%>
-<%--    		</c:if> --%>
-   	
-<%--          <c:forEach begin="1" end="${noOfPages}" var="i"> --%>
-<%--              <c:choose> --%>
-<%--                  <c:when test="${currentPage == i}"> --%>
-<%--                      ${i} --%>
-<%--                  </c:when> --%>
-<%--                  <c:otherwise> --%>
-<%--                      <a href="Complist?page=${i}" onClick="this.form.search.value=${search}">${i}</a> --%>
-<%--                  </c:otherwise> --%>
-<%--              </c:choose> --%>
-<%--          </c:forEach> --%>
-      
-<%--          <c:if test="${currentPage < noOfPages}"> --%>
-<%-- 			<a href="Complist?page=${currentPage + 1}" onClick="this.form.search.value=${search }">Next</a> --%>
-<%-- 		</c:if> --%>
-<!--     </div> -->
 		
 </section>
 

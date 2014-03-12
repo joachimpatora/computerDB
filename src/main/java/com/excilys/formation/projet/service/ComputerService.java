@@ -3,21 +3,17 @@ package com.excilys.formation.projet.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.formation.projet.dao.ComputerDao;
-import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.om.Computer;
 
+@Service
 public class ComputerService {
 	
-	private ComputerDao computerDao = DAOFactory.getInstance().getComputerDAO();
-	private static ComputerService  _instance = null;
-	
-	synchronized public static ComputerService getInstance() {
-		if (_instance == null) {
-			_instance = new ComputerService ();
-		}
-		return _instance;
-	}
+	@Autowired
+	private ComputerDao computerDao;
 	
 	public void update(Computer computer) throws SQLException {
 		computerDao.update(computer);
