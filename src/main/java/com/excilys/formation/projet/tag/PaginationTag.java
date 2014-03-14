@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 
 public class PaginationTag extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Logger logger = LoggerFactory.getLogger(PaginationTag.class);
 	
 	private int totalRecords; //Nombre d'enregistrements

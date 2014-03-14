@@ -6,7 +6,7 @@
 
 <ul class="pagination">
       <c:if test="${currentPage != 1}">
-     	 	<li><a href="Complist?page=${currentPage - 1}" onClick="this.form.search.value=${search}">Previous</a></li>
+     	 	<li><a href="?page=${currentPage - 1}" onClick="this.form.search.value=${search}">Previous</a></li>
   		</c:if>
   	
         <c:forEach begin="1" end="${noOfPages}" var="i">
@@ -15,12 +15,12 @@
                     <li><a>${i}</a></li>
                 </c:when>
                 <c:otherwise>
-                    <a href="Complist?page=${i}" onClick="this.form.search.value=${search}"><li>${i}</li></a>
+                    <a href="?page=${i}" onClick="this.form.search.value=${search}"><li>${i}</li></a>
                 </c:otherwise>
             </c:choose>
         </c:forEach>
      
         <c:if test="${currentPage < noOfPages}">
-		<a href="Complist?page=${currentPage + 1}" onClick="this.form.search.value=${search }"><li>Next</li></a>
+		<a href="?page=${currentPage + 1}" onClick="this.form.search.value=${search }"><li>Next</li></a>
 	</c:if>
 </ul>

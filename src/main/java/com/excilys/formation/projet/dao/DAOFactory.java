@@ -23,12 +23,4 @@ public class DAOFactory {
 	private DAOFactory() {
 		
 	}
-
-	public ComputerDao getComputerDAO() {
-		return ComputerDao.getInstance();
-	}
-
-	public CompanyDao getCompanyDAO() {
-		return CompanyDao.getInstance();
-	}
 }

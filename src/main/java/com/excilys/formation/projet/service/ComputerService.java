@@ -35,6 +35,11 @@ public class ComputerService {
 		return computerDao.getAll(offset, noOfRecords, searchStr, orderBy);
 	}
 	
+	public List<Computer> getAll()
+	{
+		return computerDao.getAll();
+	}
+	
 	public int getCount() {
 		return computerDao.getNbOfComputers();
 	}

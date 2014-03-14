@@ -35,6 +35,47 @@ public class ComputerDao {
 		super();
 	}
 	
+	public ArrayList<Computer> getAll()
+	{
+		ArrayList<Computer> list = new ArrayList<Computer>();
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
+		Connection conn;
+		try {
+			conn = ConnectionDB.getConnection();
+			stmt = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id;");
+			monitor.addLog(conn, 0L, "List of computers transmitted.");
+			rs = stmt.executeQuery();
+			
+			while(rs.next())
+			{
+				Computer computers = new Computer();
+				computers.setId(new Long(rs.getString(1)));
+				computers.setName(rs.getString(2));
+				computers.setIntroducedDate(rs.getString(3));
+				computers.setDiscontinuedDate(rs.getString(4));
+				computers.setCompany(rs.getString(5));
+				
+				list.add(computers);
+			}
+			try {
+				if (rs != null)
+				{
+					rs.close();
+				}
+				if (stmt != null)
+				{
+					stmt.close();
+				}
+				conn.close();
+			} catch (SQLException e) {}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 	public ArrayList<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) throws SQLException
 	{
 		Connection conn = ConnectionDB.getConnection();
