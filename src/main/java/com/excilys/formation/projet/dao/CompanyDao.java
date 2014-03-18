@@ -37,6 +37,48 @@ public class CompanyDao {
 		
 	}
 	
+	public Company find(Long companyid)
+	{
+		Connection conn;
+		ResultSet rs = null ;
+		PreparedStatement stmt = null;
+		Company company = new Company();
+		try {
+			conn = ConnectionDB.getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM company WHERE id = ?");
+			stmt.setLong(1, companyid);
+			rs = stmt.executeQuery();
+			while(rs.next()){
+				company.setId(companyid);
+				company.setName(rs.getString(1));
+			}
+		} catch (SQLException e1) {
+			logger.error("Connection impossible", e1);
+		}
+		return company;
+	}
+	
+	public Company find(String companyname)
+	{
+		Connection conn;
+		ResultSet rs = null ;
+		PreparedStatement stmt = null;
+		Company company = new Company();
+		try {
+			conn = ConnectionDB.getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
+			stmt.setString(1, companyname);
+			rs = stmt.executeQuery();
+			while(rs.next()){
+				company.setId(new Long(rs.getString(1)));
+				company.setName(companyname);
+			}
+		} catch (SQLException e1) {
+			logger.error("Connection impossible", e1);
+		}
+		return company;
+	}
+	
 	public ArrayList<Company> getAll() throws SQLException
 	{
 		Connection conn = ConnectionDB.getConnection();

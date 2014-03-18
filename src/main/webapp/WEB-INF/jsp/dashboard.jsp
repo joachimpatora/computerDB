@@ -39,7 +39,7 @@
 					<td><a href="editComputer?compId=${lstcomp.getId()}" onclick="">${lstcomp.getName()}</a></td>
 					<td>${lstcomp.getIntroducedDate()}</td>
 					<td>${lstcomp.getDiscontinuedDate()}</td>
-					<td>${lstcomp.getCompany()}</td>
+					<td>${lstcomp.getCompanyname()}</td>
 				</tr>
 			</c:forEach>
 		</tbody>

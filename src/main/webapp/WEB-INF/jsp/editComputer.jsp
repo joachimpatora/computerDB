@@ -39,9 +39,9 @@
 				<div class="input">
 					<select name="company" id="companyInput">
 						<option value="0">--</option>
-						<c:forEach items="${listComp}" var="comp">
+						<c:forEach items="${listOfCompanies}" var="comp">
 							<c:choose> 
-								<c:when test="${comp.getName().trim().equals(computer.getCompany().trim())}">
+								<c:when test="${comp.getName().equals(computer.getCompanyname())}">
 									<option selected value="${comp.getId()}">${comp.getName()}</option>
 								</c:when>
 								<c:otherwise>
@@ -54,8 +54,8 @@
 			</div>
 		</fieldset>
 		<div class="actions">
-			<input type="submit" value="Edit" class="btn primary" name="updateButton" onclick='$("#actionInput").val("EDIT");'>
-			<input type="submit" value="Delete" class="btn primary" name="updateButton" onclick='$("#actionInput").val("DELETE");'>
+			<input type="submit" value="Edit" class="btn primary" name="updateButton" >
+			<input type="submit" value="Delete" class="btn danger" name="updateButton" >
 			<a href="dashboard?main=accueil" class="btn">Cancel</a>
 		</div>
 	</form>

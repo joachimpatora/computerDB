@@ -35,7 +35,7 @@
 				<div class="input">
 					<select name="company" id="companyInput">
 						<option value="0">--</option>
-						<c:forEach items="${listComp}" var="comp">
+						<c:forEach items="${listOfCompanies}" var="comp">
 							<option value="${comp.getId()}">${comp.getName()}</option>
 						</c:forEach>
 					</select>

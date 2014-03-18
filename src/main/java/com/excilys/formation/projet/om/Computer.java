@@ -1,14 +1,15 @@
 package com.excilys.formation.projet.om;
 
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Computer {
-	Long id;
-	String name;
-	String companyname;
-	String introducedDate;
-	String discontinuedDate;
+	private Long id;
+	private String name;
+	private LocalDate introducedDate;
+	private LocalDate discontinuedDate;
+	private Company company;
 	
 	public Computer()
 	{
@@ -35,22 +36,23 @@ public class Computer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getCompany() {
-		return companyname;
+	public Company getCompany() {
+		return company;
 	}
-	public void setCompany(String companyname) {
-		this.companyname = companyname;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
-	public String getIntroducedDate() {
+	public LocalDate getIntroducedDate() {
 		return introducedDate;
 	}
-	public void setIntroducedDate(String introducedDate) {
+	public void setIntroducedDate(LocalDate introducedDate) {
 		this.introducedDate = introducedDate;
 	}
-	public String getDiscontinuedDate() {
+	public LocalDate getDiscontinuedDate() {
 		return discontinuedDate;
 	}
-	public void setDiscontinuedDate(String discontinuedDate) {
+	
+	public void setDiscontinuedDate(LocalDate discontinuedDate) {
 		this.discontinuedDate = discontinuedDate;
 	}
 	

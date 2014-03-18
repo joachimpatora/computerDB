@@ -19,4 +19,14 @@ public class CompanyService {
 		return companyDao.getAll();
 	}	
 	
+	public Company find(Long companyid)
+	{
+		return companyDao.find(companyid);
+	}
+	
+	public Company find(String companyname)
+	{
+		return companyDao.find(companyname);
+	}
+	
 }

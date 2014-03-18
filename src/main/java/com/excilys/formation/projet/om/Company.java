@@ -4,8 +4,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Company {
-	String name;
-	Long id;
+	
+	private String name;
+	private Long id;
 	
 	public Company()
 	{

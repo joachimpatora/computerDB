@@ -1,22 +1,24 @@
 package com.excilys.formation.projet.controller;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.excilys.formation.projet.om.Computer;
-
 import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.formation.projet.dto.CompanyDto;
+import com.excilys.formation.projet.dto.ComputerDto;
+import com.excilys.formation.projet.om.Company;
+import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.service.CompanyService;
 import com.excilys.formation.projet.service.ComputerService;
 
@@ -59,6 +61,7 @@ public class ComputerListController {
 		
 		Long recordsPerPage = RECORDS_PER_PAGE;
 		List<Computer> liste;
+		List<ComputerDto> listdto = new ArrayList<ComputerDto>();
 		
 		
 		logger.info("Displaying dashboard");
@@ -80,10 +83,16 @@ public class ComputerListController {
 			{
 				liste = computerService.getAll((pageNb - 1)* recordsPerPage, recordsPerPage, "", orderBy);
 			}
-			modelAndView.addObject("listOfComputers",liste);
+			for(Computer comp: liste)
+			{
+				ComputerDto compdto = new ComputerDto();
+				listdto.add(compdto.toDto(comp));
+			}
+			modelAndView.addObject("listOfComputers",listdto);
 		} catch (Exception e) {
 			logger.error("Mauvaise récupération des ordinateurs", e);
 		}
+		
 		int noOfRecords = computerService.getCount();
 		int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 		modelAndView.addObject("totalNbOfComp", noOfRecords);
@@ -99,7 +108,14 @@ public class ComputerListController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("addComputer");
 		try{
-			modelAndView.addObject("listComp", companyService.getAll());
+			List<Company> liste = companyService.getAll();
+			List<CompanyDto> listdto = new ArrayList<CompanyDto>();
+			for(Company company: liste)
+			{
+				CompanyDto compdto = new CompanyDto();
+				listdto.add(compdto.toDto(company));
+			}
+			modelAndView.addObject("listOfCompanies", listdto);
 		} catch(Exception e) {}
 		return modelAndView;
 	}
@@ -109,8 +125,22 @@ public class ComputerListController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("editComputer");
 		try {
-			modelAndView.addObject("computer", computerService.get(compId));
-			modelAndView.addObject("listComp", companyService.getAll());
+			Computer computer = computerService.get(compId);
+			ComputerDto computerdto = new ComputerDto();
+			logger.error("Compagnie = "+ computerdto.getName());
+			computerdto = computerdto.toDto(computer);
+			logger.debug("La compagnie du computer est " + computerdto.getCompanyname());
+			modelAndView.addObject("computer", computerdto);
+			
+			List<Company> liste = companyService.getAll();
+			List<CompanyDto> listdto = new ArrayList<CompanyDto>();
+			for(Company company: liste)
+			{
+				CompanyDto compdto = new CompanyDto();
+				compdto = compdto.toDto(company);
+				listdto.add(compdto);
+			}
+			modelAndView.addObject("listOfCompanies", listdto);
 		} catch (SQLException e) {
 			logger.error("Mauvaise récupération de l'ordinateur à éditer", e);
 		}
@@ -119,16 +149,21 @@ public class ComputerListController {
 	
 	@RequestMapping(value="/addComputerResult", method=RequestMethod.POST)
 	public ModelAndView addComputer(@RequestParam(value="name", required=true) String name,
-			@RequestParam(value="introducedDate", required=false) String introducedDate,
-			@RequestParam(value="discontinuedDate", required=false) String discontinuedDate,
-			@RequestParam(value="company", required=false) String company)
+			@RequestParam(value="introducedDate", required=true) String introducedDate,
+			@RequestParam(value="discontinuedDate", required=true) String discontinuedDate,
+			@RequestParam(value="company", required=false) Long companyid)
 	{
 		ModelAndView modelAndView = new ModelAndView("redirect:dashboard?main=accueil");
 		logger.info("Displaying dashboard");
 		Computer computer = new Computer();
 		computer.setName(name);
-		computer.setIntroducedDate(introducedDate);
-		computer.setDiscontinuedDate(discontinuedDate);
+		try {
+			computer.setIntroducedDate(new LocalDate(introducedDate));
+			computer.setDiscontinuedDate(new LocalDate(discontinuedDate));
+		} catch (Exception e) {
+			logger.error("Incorrect parsing", e);
+		}
+		Company company = companyService.find(companyid);
 		computer.setCompany(company);
 		try {
 			computerService.add(computer);
@@ -143,19 +178,36 @@ public class ComputerListController {
 	public ModelAndView updateComputer(@RequestParam(value="hiddenid", required=true) Long hiddenid,
 			@RequestParam(value="updateButton", required=true) String updateButton,
 			@RequestParam(value="name", required=true) String name,
-			@RequestParam(value="introducedDate", required=false) String introducedDate,
-			@RequestParam(value="discontinuedDate", required=false) String discontinuedDate,
-			@RequestParam(value="company", required=false) String company) {
+			@RequestParam(value="introducedDate", required=true) String introducedDate,
+			@RequestParam(value="discontinuedDate", required=true) String discontinuedDate,
+			@RequestParam(value="company", required=false) Long companyid) {
 
 		ModelAndView modelAndView = new ModelAndView("redirect:dashboard?main=accueil");
 		if ("Edit".equals(updateButton)) 
 		{
 			logger.info("Displaying dashboard");
 			Computer computer = new Computer();
+			computer.setName(name);
+			try {
+				if(!introducedDate.isEmpty()) {
+					computer.setIntroducedDate(new LocalDate(introducedDate));
+				}
+				else {
+					computer.setIntroducedDate(null);
+				}
+				if(!discontinuedDate.isEmpty()) {
+					computer.setDiscontinuedDate(new LocalDate(discontinuedDate));
+				}
+				else {
+					computer.setDiscontinuedDate(null);
+				}
+			} catch (Exception e) {
+				logger.error("Incorrect parsing", e);
+			}
 			computer.setId(hiddenid);
 			computer.setName(name);
-			computer.setIntroducedDate(introducedDate);
-			computer.setDiscontinuedDate(discontinuedDate);
+			
+			Company company = companyService.find(companyid);
 			computer.setCompany(company);
 			try {
 				computerService.update(computer);
