@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.sql.DataSource;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
 
-@Repository
+@Repository	
 public class ComputerDao {
 
 	final private Long ASC = 0L;
@@ -23,6 +25,9 @@ public class ComputerDao {
 
 	@Autowired
 	private MonitorDbDao monitor;
+	
+	@Autowired
+	DataSource dataSource;
 
 	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
 	private int nbofcomputers = 0;
@@ -31,7 +36,7 @@ public class ComputerDao {
 	Long orderByDir = ASC;
 	String old_orderBy = "";
 	String OrderByDirection = "ASC";
-
+		
 	public ComputerDao() {
 		super();
 	}
@@ -42,7 +47,7 @@ public class ComputerDao {
 		PreparedStatement stmt = null;
 		Connection conn;
 		try {
-			conn = ConnectionDB.getConnection();
+			conn = dataSource.getConnection();
 			stmt = conn
 					.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company.id, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id;");
 			monitor.addLog(conn, 0L, "List of computers transmitted.");
@@ -80,7 +85,7 @@ public class ComputerDao {
 
 	public ArrayList<Computer> getAll(Long offset, Long noOfRecords,
 			String searchStr, String orderBy) throws SQLException {
-		Connection conn = ConnectionDB.getConnection();
+		Connection conn = dataSource.getConnection();
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -211,7 +216,7 @@ public class ComputerDao {
 	}
 
 	public Computer get(Long id) throws SQLException {
-		Connection conn = ConnectionDB.getConnection();
+		Connection conn = dataSource.getConnection();
 		Computer computer = new Computer();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -255,7 +260,7 @@ public class ComputerDao {
 	}
 
 	public void delete(Long id) throws SQLException {
-		Connection conn = ConnectionDB.getConnection();
+		Connection conn = dataSource.getConnection();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		if (id == null)
@@ -286,7 +291,7 @@ public class ComputerDao {
 	}
 
 	public void update(Computer computer) throws SQLException {
-		Connection conn = ConnectionDB.getConnection();
+		Connection conn = dataSource.getConnection();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		Long companyid = null;
@@ -357,7 +362,7 @@ public class ComputerDao {
 
 	@Autowired
 	public void add(Computer computer) throws SQLException {
-		Connection conn = ConnectionDB.getConnection();
+		Connection conn = dataSource.getConnection();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		Long companyid = null;

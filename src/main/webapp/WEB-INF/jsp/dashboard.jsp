@@ -1,10 +1,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="paging" %>
 <jsp:include page="../header.jsp" />
 
 <section id="main">
 	<div id="message">${message}</div>
-	<h1 id="homeTitle">${totalNbOfComp} Computers found</h1>
+	<h1><span style="float: right">
+    <a href="?lang=en">en</a>|<a href="?lang=fr">fr</a>
+	</span></h1>
+	<h1 id="homeTitle">${totalNbOfComp} <spring:message code="label.dashboard.totalnb"/></h1>
 	
 	
 	<div id="actions">
@@ -12,10 +16,10 @@
 			<input type="search" id="searchbox" name="search"
 				value="" placeholder="Search name">
 			<input type="submit" id="searchsubmit"
-				value="Filter by name"
+				value="<spring:message code="button.filterbyname"/>"
 				class="btn primary">
 		</form>
-		<a class="btn success" id="add" href="addComputer">Add Computer</a>
+		<a class="btn success" id="add" href="addComputer"><spring:message code="label.addcomputer"/></a>
 	</div>
 	
 	<table class="computers zebra-striped">
@@ -23,12 +27,12 @@
 			<tr>
 				<!-- Variable declarations for passing labels as parameters -->
 				<!-- Table header for Computer Name -->
-				<th><a href="?orderBy=Name">Computer Name</a></th>
-				<th><a href="?orderBy=IntroDate">Introduced Date</a></th>
+				<th><a href="?orderBy=Name"><spring:message code="label.computername"/></a></th>
+				<th><a href="?orderBy=IntroDate"><spring:message code="label.introductiondate"/></a></th>
 				<!-- Table header for Discontinued Date -->
-				<th><a href="?orderBy=OutroDate">Discontinued Date</a></th>
+				<th><a href="?orderBy=OutroDate"><spring:message code="label.discontinueddate"/></a></th>
 				<!-- Table header for Company -->
-				<th><a href="?orderBy=Company">Company</a></th>
+				<th><a href="?orderBy=Company"><spring:message code="label.company"/></a></th>
 			</tr>
 		</thead>
 		

@@ -7,12 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.projet.dao.ConnectionDB;
 import com.excilys.formation.projet.om.Company;
 
 @Repository
@@ -22,6 +23,9 @@ public class CompanyDao {
 	
 	@Autowired
 	private MonitorDbDao monitor;
+
+	@Autowired
+	DataSource dataSource;
 	
 	public MonitorDbDao getMonitor() {
 		return monitor;
@@ -44,7 +48,7 @@ public class CompanyDao {
 		PreparedStatement stmt = null;
 		Company company = new Company();
 		try {
-			conn = ConnectionDB.getConnection();
+			conn = dataSource.getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM company WHERE id = ?");
 			stmt.setLong(1, companyid);
 			rs = stmt.executeQuery();
@@ -65,7 +69,7 @@ public class CompanyDao {
 		PreparedStatement stmt = null;
 		Company company = new Company();
 		try {
-			conn = ConnectionDB.getConnection();
+			conn = dataSource.getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
 			stmt.setString(1, companyname);
 			rs = stmt.executeQuery();
@@ -79,15 +83,16 @@ public class CompanyDao {
 		return company;
 	}
 	
-	public ArrayList<Company> getAll() throws SQLException
+	public ArrayList<Company> getAll() 
 	{
-		Connection conn = ConnectionDB.getConnection();
-		ArrayList<Company> list = new ArrayList<Company>();
+
 		ResultSet rs = null;
 		Statement stmt = null;
-		
+		Connection conn = null;
+		ArrayList<Company> list = new ArrayList<Company>();
 		try
 		{
+			conn = dataSource.getConnection();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT id, name FROM company; ");
 			int i = 1;
@@ -105,7 +110,6 @@ public class CompanyDao {
 		catch (Exception e)
 		{
 			logger.error("Erreur lors de la récupération des Companies.", e);
-			monitor.addLog(conn, 2L, "Error while retrieving companies.");
 		}
 		finally
 		{
@@ -118,7 +122,10 @@ public class CompanyDao {
 				{
 					stmt.close();
 				}
-				conn.close();
+				if(conn != null)
+				{
+					conn.close();
+				}
 			} catch (SQLException e) {}
 		}
 		return list;
@@ -128,7 +135,7 @@ public class CompanyDao {
 		
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
-		Connection conn = ConnectionDB.getConnection();
+		Connection conn = dataSource.getConnection();
 		
 		try {
 			

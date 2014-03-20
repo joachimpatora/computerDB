@@ -1,64 +1,58 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <jsp:include page="../header.jsp" />
 <script type="text/javascript" src="validationForm.js">
 
 </script>
 <section id="main">
 
-	<h1>Edit Computer</h1>
-	<h2>You are editing ${computer.getName()}</h2>
+	<h1><spring:message code="label.editcomputer"/></h1>
+	<h2><spring:message code="label.editingcomputer"/> ${computer.getName()}</h2>
 	<div id="message">${message}</div>
-	<form action="updateComputer" method="POST" id="formAdd" name="computeredition">
+	<form:form action="updateComputer" method="POST" modelAttribute="ComputerDto" name="computeredition">
 		<fieldset>
 			<input type="hidden" value="${computer.getId()}" name="hiddenid">
 			<input type="hidden" value="" name="action" id="actionInput">
 			<div class="clearfix">
-				<label for="name">Computer name:</label>
+				<label for="name"><spring:message code="label.computername"/></label>
 				<div class="input">
-					<input type="text" name="name" id="nameInput" value="${computer.getName()}"/>
-					<span class="help-inline">Required</span>
+					<form:input path="name" id="nameInput" value="${computer.getName()}"/>
+					<form:errors path="name" cssStyle="color: red;" />
+					<span class="help-inline"><spring:message code="label.helpname"/></span>
 				</div>
 			</div>
 	
 			<div class="clearfix">
-				<label for="introduced">Introduced date:</label>
+				<label for="introduced"><spring:message code="label.introductiondate"/></label>
 				<div class="input">
-					<input type="date" name="introducedDate" id="introducedInput" value="${computer.getIntroducedDate()}"/>
-					<span class="help-inline">YYYY-MM-DD</span>
+					<form:input path="introducedDate" id="introducedInput" value="${computer.getIntroducedDate()}"/>
+					<form:errors path="introducedDate" cssStyle="color: red;" />
+					<span class="help-inline"><spring:message code="label.helpdate"/></span>
 				</div>
 			</div>
 			<div class="clearfix">
-				<label for="discontinued">Discontinued date:</label>
+				<label for="discontinued"><spring:message code="label.discontinueddate"/></label>
 				<div class="input">
-					<input type="date" name="discontinuedDate" id="discontinuedInput" value="${computer.getDiscontinuedDate()}" />
-					<span class="help-inline">YYYY-MM-DD</span>
+					<form:input path="discontinuedDate" id="discontinuedInput" value="${computer.getDiscontinuedDate()}" />
+					<form:errors path="discontinuedDate" cssStyle="color: red;" />
+					<span class="help-inline"><spring:message code="label.helpdate"/></span>
 				</div>
 			</div>
 			<div class="clearfix">
-				<label for="company">Company Name:</label>
+				<label for="company"><spring:message code="label.companyname"/></label>
 				<div class="input">
-					<select name="company" id="companyInput">
-						<option value="0">--</option>
-						<c:forEach items="${listOfCompanies}" var="comp">
-							<c:choose> 
-								<c:when test="${comp.getName().equals(computer.getCompanyname())}">
-									<option selected value="${comp.getId()}">${comp.getName()}</option>
-								</c:when>
-								<c:otherwise>
-									<option value="${comp.getId()}">${comp.getName()}</option>
-								</c:otherwise>
-							</c:choose>-->
-						</c:forEach>
-					</select>
+					<form:select id="companyInput"  path="companyid" items="${listOfCompanies}" itemValue="id" itemLabel="name" />
+					<form:errors path="companyid" cssStyle="color: red;" />
 				</div>
 			</div>
 		</fieldset>
 		<div class="actions">
-			<input type="submit" value="Edit" class="btn primary" name="updateButton" >
-			<input type="submit" value="Delete" class="btn danger" name="updateButton" >
-			<a href="dashboard?main=accueil" class="btn">Cancel</a>
+			<input type="submit" value="<spring:message code='button.edit.title'/>" class="btn primary" name="updateButton" >
+			<input type="submit" value="<spring:message code='button.delete.title'/>" class="btn danger" name="updateButton" >
+			<a href="dashboard?main=accueil" class="btn"><spring:message code="label.cancel"/></a>
 		</div>
-	</form>
+	</form:form>
 </section>
 
 <jsp:include page="../footer.jsp" />

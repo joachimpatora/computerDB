@@ -1,28 +1,44 @@
 package com.excilys.formation.projet.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import java.util.Locale;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
 
 @Component
-public class ComputerDto {
+public class ComputerDto implements MessageSourceAware {
 	
 	private Long id;
 	@NotNull
+	@NotEmpty
 	private String name;
 	@NotNull
-	@Pattern(regexp="^(((19|20)[0-9][0-9])[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$")
+	@NotEmpty
+	@DateFormat
 	private String introducedDate;
 	@NotNull
-	@Pattern(regexp="^(((19|20)[0-9][0-9])[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$")
+	@NotEmpty
+	@DateFormat
 	private String discontinuedDate;
 	private String companyname;
 	private Long companyid;
+	
+	private static MessageSource messageSource;
+	
+	public void setMessageSource(MessageSource messageSource) {
+		ComputerDto.messageSource = messageSource;	
+		}
 	
 	public ComputerDto(Long id, String name, String introducedDate,
 			String discontinuedDate, String companyname, Long companyid) {
@@ -81,9 +97,12 @@ public class ComputerDto {
 		Computer computer = new Computer();
 		computer.setId(computerdto.getId());
 		computer.setName(computerdto.getName());
+		Locale locale = LocaleContextHolder.getLocale();
+		String dateFormat = messageSource.getMessage("date.format", null, locale);
+		DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern(dateFormat);
 		
-		computer.setIntroducedDate(toLocalDateParser(computerdto.introducedDate));
-		computer.setDiscontinuedDate(toLocalDateParser(computerdto.getIntroducedDate()));
+		computer.setIntroducedDate(LocalDate.parse(computerdto.introducedDate, dateStringFormat));
+		computer.setDiscontinuedDate(LocalDate.parse(computerdto.discontinuedDate, dateStringFormat));
 		
 		Company company = new Company();
 		company.setId(computerdto.getCompanyid());
@@ -95,19 +114,16 @@ public class ComputerDto {
 	
 	public ComputerDto toDto(Computer computer)
 	{
+		Locale locale = LocaleContextHolder.getLocale();
+		String dateFormat = messageSource.getMessage("date.format", null, locale);
+		
 		ComputerDto computerdto = new ComputerDto();
 		computerdto.setId(computer.getId());
 		computerdto.setName(computer.getName());
-		computerdto.setIntroducedDate(computer.getIntroducedDate().toString());
-		computerdto.setDiscontinuedDate(computer.getDiscontinuedDate().toString());
+		computerdto.setIntroducedDate(computer.getIntroducedDate().toString(dateFormat, locale));
+		computerdto.setDiscontinuedDate(computer.getDiscontinuedDate().toString(dateFormat, locale));
 		computerdto.setCompanyid(computer.getCompany().getId());
 		computerdto.setCompanyname(computer.getCompany().getName());
 		return computerdto;
 	}
-	
-	private LocalDate toLocalDateParser(String date)
-	{
-		return new LocalDate(date);
-	}
-	
 }
