@@ -22,6 +22,7 @@ import com.excilys.formation.projet.dto.CompanyDto;
 import com.excilys.formation.projet.dto.ComputerDto;
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
+import com.excilys.formation.projet.om.ComputerListWrapper;
 import com.excilys.formation.projet.service.CompanyService;
 import com.excilys.formation.projet.service.ComputerService;
 
@@ -64,8 +65,9 @@ public class ComputerListController {
 			@RequestParam(value = "message", required = false) String message) {
 
 		Long recordsPerPage = RECORDS_PER_PAGE;
-		List<Computer> liste;
 		List<ComputerDto> listdto = new ArrayList<ComputerDto>();
+		
+		ComputerListWrapper clw = new ComputerListWrapper();
 
 		logger.info("Displaying dashboard");
 
@@ -75,18 +77,18 @@ public class ComputerListController {
 
 		try {
 			if ((main != null) && (main.equals("accueil"))) {
-				liste = computerService.getAll((pageNb - 1) * recordsPerPage,
+				clw = computerService.getAll((pageNb - 1) * recordsPerPage,
 						recordsPerPage, null, null);
 			} else if (searchStr != null) {
-				liste = computerService.getAll((pageNb - 1) * recordsPerPage,
+				clw = computerService.getAll((pageNb - 1) * recordsPerPage,
 						recordsPerPage, searchStr, orderBy);
 			} else {
-				liste = computerService.getAll((pageNb - 1) * recordsPerPage,
+				clw = computerService.getAll((pageNb - 1) * recordsPerPage,
 						recordsPerPage, "", orderBy);
 			}
-			for (Computer comp : liste) {
+			for (Object comp : clw.getComputerList()) {
 				ComputerDto compdto = new ComputerDto();
-				listdto.add(compdto.toDto(comp));
+				listdto.add(compdto.toDto((Computer) comp));
 			}
 			modelAndView.addObject("listOfComputers", listdto);
 		} catch (Exception e) {

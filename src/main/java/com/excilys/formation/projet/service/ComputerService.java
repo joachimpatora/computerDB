@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.projet.dao.ComputerDao;
 import com.excilys.formation.projet.om.Computer;
+import com.excilys.formation.projet.om.ComputerListWrapper;
 
 @Service
 @Transactional
@@ -33,8 +34,9 @@ public class ComputerService {
 		return computerDao.get(id);
 	}
 	
-	public List<Computer> getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) throws SQLException {
-		return computerDao.getAll(offset, noOfRecords, searchStr, orderBy);
+	public ComputerListWrapper getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) throws SQLException {
+		ComputerListWrapper clw = new ComputerListWrapper(computerDao.getAll(offset, noOfRecords, searchStr, orderBy),computerDao.getNbOfComputers());
+		return clw;
 	}
 	
 	public List<Computer> getAll()
