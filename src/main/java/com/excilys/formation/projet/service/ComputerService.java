@@ -8,26 +8,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.projet.dao.ComputerDao;
+import com.excilys.formation.projet.dao.MonitorDbDao;
 import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.om.ComputerListWrapper;
 
 @Service
-@Transactional
 public class ComputerService {
 	
 	@Autowired
-	private ComputerDao computerDao;
+	private MonitorDbDao monitor;
 	
+	@Autowired
+	private ComputerDao computerDao;
+
+	@Transactional
 	public void update(Computer computer) throws SQLException {
 		computerDao.update(computer);
+		monitor.addLog(0L, "Updating "+computer.getId());
 	}
 	
-	public void delete(Long id) throws SQLException {
+	@Transactional
+	public void delete(Long id) {
+		monitor.addLog(0L, "Deleting "+id);
 		computerDao.delete(id);
+		
 	}
 
+	@Transactional
 	public void add(Computer computer) throws SQLException {
 		computerDao.add(computer);
+		monitor.addLog(0L, "Add "+computer.getId());
 	}
 	
 	public Computer get(Long id) throws SQLException {
@@ -36,6 +46,7 @@ public class ComputerService {
 	
 	public ComputerListWrapper getAll(Long offset, Long noOfRecords, String searchStr, String orderBy) throws SQLException {
 		ComputerListWrapper clw = new ComputerListWrapper(computerDao.getAll(offset, noOfRecords, searchStr, orderBy),computerDao.getNbOfComputers());
+		monitor.addLog(0L, "GettingAll");
 		return clw;
 	}
 	

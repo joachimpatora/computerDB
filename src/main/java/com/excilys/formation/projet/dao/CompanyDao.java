@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.projet.om.Company;
@@ -20,21 +21,9 @@ import com.excilys.formation.projet.om.Company;
 public class CompanyDao {
 	
 	Logger logger = LoggerFactory.getLogger(CompanyDao.class);
-	
-	@Autowired
-	private MonitorDbDao monitor;
 
 	@Autowired
 	DataSource dataSource;
-	
-	public MonitorDbDao getMonitor() {
-		return monitor;
-	}
-
-	@Autowired
-	public void setMonitor(MonitorDbDao monitor) {
-		this.monitor = monitor;
-	}
 
 	private CompanyDao()
 	{
@@ -48,7 +37,7 @@ public class CompanyDao {
 		PreparedStatement stmt = null;
 		Company company = new Company();
 		try {
-			conn = dataSource.getConnection();
+			conn = DataSourceUtils.getConnection(dataSource);
 			stmt = conn.prepareStatement("SELECT * FROM company WHERE id = ?");
 			stmt.setLong(1, companyid);
 			rs = stmt.executeQuery();
@@ -58,6 +47,18 @@ public class CompanyDao {
 			}
 		} catch (SQLException e1) {
 			logger.error("Connection impossible", e1);
+		} finally
+		{
+			try {
+				if (rs != null)
+				{
+					rs.close();
+				}
+				if (stmt != null)
+				{
+					stmt.close();
+				}
+			} catch (SQLException e) {}
 		}
 		return company;
 	}
@@ -69,7 +70,7 @@ public class CompanyDao {
 		PreparedStatement stmt = null;
 		Company company = new Company();
 		try {
-			conn = dataSource.getConnection();
+			conn = DataSourceUtils.getConnection(dataSource);
 			stmt = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
 			stmt.setString(1, companyname);
 			rs = stmt.executeQuery();
@@ -79,6 +80,18 @@ public class CompanyDao {
 			}
 		} catch (SQLException e1) {
 			logger.error("Connection impossible", e1);
+		} finally
+		{
+			try {
+				if (rs != null)
+				{
+					rs.close();
+				}
+				if (stmt != null)
+				{
+					stmt.close();
+				}
+			} catch (SQLException e) {}
 		}
 		return company;
 	}
@@ -92,7 +105,7 @@ public class CompanyDao {
 		ArrayList<Company> list = new ArrayList<Company>();
 		try
 		{
-			conn = dataSource.getConnection();
+			conn = DataSourceUtils.getConnection(dataSource);
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT id, name FROM company; ");
 			int i = 1;
@@ -104,8 +117,6 @@ public class CompanyDao {
 				i = i + 2;
 				list.add(company);
 			}
-
-			monitor.addLog(conn, 0L, "Companies transmitted.");
 		}
 		catch (Exception e)
 		{
@@ -122,10 +133,6 @@ public class CompanyDao {
 				{
 					stmt.close();
 				}
-				if(conn != null)
-				{
-					conn.close();
-				}
 			} catch (SQLException e) {}
 		}
 		return list;
@@ -135,7 +142,7 @@ public class CompanyDao {
 		
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
-		Connection conn = dataSource.getConnection();
+		Connection conn = DataSourceUtils.getConnection(dataSource);
 		
 		try {
 			
@@ -145,11 +152,9 @@ public class CompanyDao {
 			stmt.setString(2,company.getName());
 			
 			stmt.executeUpdate();
-			monitor.addLog(conn, 0L, "Company added.");
 			
 		} catch (Exception e) {
 			logger.error("Erreur lors du traitement SQL.", e);
-			monitor.addLog(conn, 2L, "Error while adding company.");
 		} finally {
 			try {
 				if (rs != null)
@@ -160,7 +165,6 @@ public class CompanyDao {
 				{
 					stmt.close();
 				}
-				conn.close();
 			} catch (SQLException e) {}
 		}
 		

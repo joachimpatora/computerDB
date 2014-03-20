@@ -1,0 +1,8 @@
+drop table if exists monitorDb;
+
+create table monitorDb (
+  id                        bigint not null auto_increment,
+  error_code                bigint,
+  message                   longtext,
+  constraint pk_monitorDb primary key (id))
+;

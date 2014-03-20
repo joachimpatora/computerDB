@@ -12,6 +12,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.projet.om.Company;
@@ -22,9 +23,6 @@ public class ComputerDao {
 
 	final private Long ASC = 0L;
 	final private Long DESC = 1L;
-
-	@Autowired
-	private MonitorDbDao monitor;
 	
 	@Autowired
 	DataSource dataSource;
@@ -47,10 +45,10 @@ public class ComputerDao {
 		PreparedStatement stmt = null;
 		Connection conn;
 		try {
-			conn = dataSource.getConnection();
+			conn = DataSourceUtils.getConnection(dataSource);
 			stmt = conn
 					.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company.id, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id;");
-			monitor.addLog(conn, 0L, "List of computers transmitted.");
+			
 			rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -73,7 +71,6 @@ public class ComputerDao {
 				if (stmt != null) {
 					stmt.close();
 				}
-				conn.close();
 			} catch (SQLException e) {
 			}
 		} catch (SQLException e) {
@@ -85,7 +82,7 @@ public class ComputerDao {
 
 	public ArrayList<Computer> getAll(Long offset, Long noOfRecords,
 			String searchStr, String orderBy) throws SQLException {
-		Connection conn = dataSource.getConnection();
+		Connection conn = DataSourceUtils.getConnection(dataSource);
 		ArrayList<Computer> list = new ArrayList<Computer>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -153,9 +150,7 @@ public class ComputerDao {
 				sqlFormat = String.format(SQL, "computer.id", OrderByDirection);
 			}
 			stmt = conn.prepareStatement(sqlFormat);
-			monitor.addLog(conn, 0L, "List of computers transmitted.");
 			if (searchStr != null) {
-
 				searchStr = "%" + searchStr + "%";
 				searchCache = searchStr;
 				stmt.setString(1, searchStr);
@@ -168,7 +163,7 @@ public class ComputerDao {
 			rs = stmt.executeQuery();
 			Long templong;
 			while (rs.next()) {
-				logger.debug(rs.getString(6));
+				//logger.debug(rs.getString(6));
 				Computer computers = new Computer();
 				computers.setId(new Long(rs.getString(1)));
 				computers.setName(rs.getString(2));
@@ -204,7 +199,6 @@ public class ComputerDao {
 				if (stmt != null) {
 					stmt.close();
 				}
-				conn.close();
 			} catch (SQLException e) {
 			}
 		}
@@ -216,7 +210,7 @@ public class ComputerDao {
 	}
 
 	public Computer get(Long id) throws SQLException {
-		Connection conn = dataSource.getConnection();
+		Connection conn = DataSourceUtils.getConnection(dataSource);
 		Computer computer = new Computer();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -240,7 +234,6 @@ public class ComputerDao {
 					Company company = new Company(rs.getString(5), templong);
 					computer.setCompany(company);
 				}
-				monitor.addLog(conn, 0L, "Computer transmitted.");
 			} catch (Exception e) {
 				logger.error("Erreur lors du traitement SQL.", e);
 			} finally {
@@ -251,7 +244,6 @@ public class ComputerDao {
 					if (stmt != null) {
 						stmt.close();
 					}
-					conn.close();
 				} catch (SQLException e) {
 				}
 			}
@@ -259,8 +251,9 @@ public class ComputerDao {
 		return computer;
 	}
 
-	public void delete(Long id) throws SQLException {
-		Connection conn = dataSource.getConnection();
+	public void delete(Long id) {
+		Connection conn = DataSourceUtils.getConnection(dataSource);
+		logger.info(conn.toString());
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		if (id == null)
@@ -268,14 +261,14 @@ public class ComputerDao {
 
 		try {
 			stmt = conn
-					.prepareStatement("DELETE FROM computer WHERE computer.id = ?");
-			stmt.setLong(1, id);
+					.prepareStatement("DELETE Fyu computer WHERE computer.id = 5000");
+			//stmt.setLong(1, id);
 
 			stmt.executeUpdate();
-			monitor.addLog(conn, 0L, "Computer deleted.");
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("Erreur lors du traitement SQL de suppression.", e);
+			throw new IllegalStateException("Erreur lors de la suppression");
 		} finally {
 			try {
 				if (rs != null) {
@@ -284,14 +277,14 @@ public class ComputerDao {
 				if (stmt != null) {
 					stmt.close();
 				}
-				conn.close();
 			} catch (SQLException e) {
+				
 			}
 		}
 	}
 
-	public void update(Computer computer) throws SQLException {
-		Connection conn = dataSource.getConnection();
+	public void update(Computer computer) {
+		Connection conn = DataSourceUtils.getConnection(dataSource);
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		Long companyid = null;
@@ -319,7 +312,7 @@ public class ComputerDao {
 
 		try {
 			stmt = conn
-					.prepareStatement("UPDATE computer SET name = ?, introduced = ? ,discontinued = ?, company_id = ? WHERE computer.id = ?");
+					.prepareStatement("UPDATE computer SET name = ?, introduced = ? ,discontinued = ?, company_id = ? WHERE computer.id = 5000");
 			stmt.setString(1, computer.getName());
 
 			if ((computer.getIntroducedDate() == null)
@@ -339,10 +332,9 @@ public class ComputerDao {
 			} else {
 				stmt.setNull(4, java.sql.Types.NULL);
 			}
-			stmt.setLong(5, computer.getId());
+			//stmt.setLong(5, computer.getId());
 
 			stmt.executeUpdate();
-			monitor.addLog(conn, 0L, "Computer updated.");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -354,7 +346,6 @@ public class ComputerDao {
 				if (stmt != null) {
 					stmt.close();
 				}
-				conn.close();
 			} catch (SQLException e) {
 			}
 		}
@@ -362,7 +353,7 @@ public class ComputerDao {
 
 	@Autowired
 	public void add(Computer computer) throws SQLException {
-		Connection conn = dataSource.getConnection();
+		Connection conn = DataSourceUtils.getConnection(dataSource);
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		Long companyid = null;
@@ -410,7 +401,6 @@ public class ComputerDao {
 			}
 
 			stmt.executeUpdate();
-			monitor.addLog(conn, 0L, "Computer added.");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -422,7 +412,6 @@ public class ComputerDao {
 				if (stmt != null) {
 					stmt.close();
 				}
-				conn.close();
 			} catch (SQLException e) {
 			}
 		}
