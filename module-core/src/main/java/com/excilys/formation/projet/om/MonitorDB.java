@@ -1,11 +1,21 @@
 package com.excilys.formation.projet.om;
 
-import org.springframework.stereotype.Component;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Component
+@Entity
+@Table(name="monitorDb")
 public class MonitorDB {
-	
-	String messageLog = "";
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	@Column(name="message")
+	String messageLog;
+	@Column(name="error_code")
 	Long error_code;
 
 	public Long getError_code() {

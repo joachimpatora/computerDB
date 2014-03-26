@@ -26,12 +26,12 @@
 		<thead>
 			<tr>
 				<!-- Variable declarations for passing labels as parameters -->
-				<th><a href="?orderBy=${ order == 'orderByNameAsc' ? 'orderByNameDesc' : 'orderByNameAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.computername"/></a></th>
-				<th><a href="?orderBy=${ order == 'orderByIntroAsc' ? 'orderByIntroDesc' : 'orderByIntroAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.introductiondate"/></a></th>
+				<th><a href="?orderBy=${ orderBy == 'orderByNameAsc' ? 'orderByNameDesc' : 'orderByNameAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.computername"/></a></th>
+				<th><a href="?orderBy=${ orderBy == 'orderByIntroAsc' ? 'orderByIntroDesc' : 'orderByIntroAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.introductiondate"/></a></th>
 				<!-- Table header for Discontinued Date -->
-				<th><a href="?orderBy=${ order == 'orderByOutroAsc' ? 'orderByOutroDesc' : 'orderByOutroAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.discontinueddate"/></a></th>
+				<th><a href="?orderBy=${ orderBy == 'orderByOutroAsc' ? 'orderByOutroDesc' : 'orderByOutroAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.discontinueddate"/></a></th>
 				<!-- Table header for Company -->
-				<th><a href="?orderBy=${ order == 'orderByCompanyAsc' ? 'orderByCompanyDesc' : 'orderByCompanyAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.company"/></a></th>
+				<th><a href="?orderBy=${ orderBy == 'orderByCompanyAsc' ? 'orderByCompanyDesc' : 'orderByCompanyAsc'}${!empty param.search ? '&search='.concat(param.search) : ''}${!empty param.lang ? '&lang='.concat(param.lang) : ''}"><spring:message code="label.company"/></a></th>
 			</tr>
 		</thead>
 		

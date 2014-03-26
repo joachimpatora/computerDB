@@ -19,15 +19,4 @@ public class CompanyService {
 	public List<Company> getAll() {
 		return companyDao.getAll();
 	}	
-	
-	public Company find(Long companyid)
-	{
-		return companyDao.find(companyid);
-	}
-	
-	public Company find(String companyname)
-	{
-		return companyDao.find(companyname);
-	}
-	
 }

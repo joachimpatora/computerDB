@@ -153,8 +153,14 @@ public class ComputerDto implements MessageSourceAware {
 		{
 			computerdto.setDiscontinuedDate(null);
 		}
-		computerdto.setCompanyid(computer.getCompany().getId());
-		computerdto.setCompanyname(computer.getCompany().getName());
+		if (computer.getCompany() != null) {
+			computerdto.setCompanyid(computer.getCompany().getId());
+			computerdto.setCompanyname(computer.getCompany().getName());
+		}
+		else {
+			computerdto.setCompanyid(null);
+			computerdto.setCompanyname(null);
+		}
 		return computerdto;
 	}
 }

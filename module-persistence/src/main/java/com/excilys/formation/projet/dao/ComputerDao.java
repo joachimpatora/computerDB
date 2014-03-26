@@ -2,6 +2,10 @@ package com.excilys.formation.projet.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,45 +16,40 @@ import com.excilys.formation.projet.om.Computer;
 
 @Repository	
 public class ComputerDao {
-
-	final private Long ASC = 0L;
-	final private Long DESC = 1L;
 	
 	@Autowired
 	JdbcTemplate getJdbcTemplate;
 	
-	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
+	@PersistenceContext(unitName = "entityManagerFactory")
+	private EntityManager entityManager;
 	
-	Long old_offset = 0L;
-	Long orderByDir = ASC;
-	String old_orderBy = "";
-	String OrderByDirection = "ASC";
+	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
 		
 	public ComputerDao() {
 		super();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Computer> getAll(Long offset, Long noOfRecords,
 			String searchStr, String orderBy) {
-		
-		StringBuilder searchSb = new StringBuilder();
-		StringBuilder query = new StringBuilder("SELECT computer.id, computer.name, introduced, discontinued, computer.company_id, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id");
+		StringBuilder query = new StringBuilder("SELECT computer FROM Computer AS computer LEFT JOIN computer.company company");
 
 		if(searchStr != null)
 		{
-			query.append(" WHERE computer.name LIKE ? ");
+			query.append(" WHERE computer.name LIKE :search");
 		}
 		if (orderBy != null)
 		{
 			query = getOrder(orderBy, query);
 		}
-		query.append(" LIMIT ?, ?;");
+		Query hQuery = entityManager.createQuery(query.toString());
 		if(searchStr != null)
 		{
-			searchSb.append("%").append(searchStr).append("%");
-			return getJdbcTemplate.query(query.toString(), new Object[]{searchSb.toString(), offset, noOfRecords}, new ComputerMapper());
+			hQuery.setParameter("search", new StringBuilder("%").append(searchStr).append("%").toString());
 		}
-		return getJdbcTemplate.query(query.toString(), new Object[]{offset, noOfRecords}, new ComputerMapper());
+		hQuery.setFirstResult(offset.intValue());
+		hQuery.setMaxResults(noOfRecords.intValue());
+		return hQuery.getResultList();
 	}
 		
 	private StringBuilder getOrder(String orderBy, StringBuilder query)
@@ -68,9 +67,9 @@ public class ComputerDao {
 		} else if (orderBy.equals("orderByOutroDesc")) {
 			query.append(" ORDER BY ").append("discontinued ").append(" DESC");
 		} else if (orderBy.equals("orderByCompanyAsc")) {
-			query.append(" ORDER BY ").append("computer.company_id ").append(" ASC");
+			query.append(" ORDER BY ").append("company_id ").append(" ASC");
 		} else if (orderBy.equals("orderByCompanyDesc")) {
-			query.append(" ORDER BY ").append("computer.company_id ").append(" DESC");
+			query.append(" ORDER BY ").append("company_id ").append(" DESC");
 		} else {
 			query.append(" ORDER BY ").append("computer.id ").append(" ASC");
 		}
@@ -78,25 +77,25 @@ public class ComputerDao {
 	}
 	
 	public int getNbOfComputers(String search) {
-		StringBuilder query = new StringBuilder("SELECT count(*) FROM computer");
-		if(search == null)
+		StringBuilder query = new StringBuilder("SELECT count(*) FROM Computer");
+		if(search != null)
 		{
-			return getJdbcTemplate.queryForObject(query.toString(), Integer.class);
+			query.append(" WHERE name LIKE :search");
 		}
-		else {
-			query.append(" WHERE name LIKE ?");
-			return getJdbcTemplate.queryForObject(query.toString(), Integer.class, "%" + search + "%");
+		Query hQuery = entityManager.createQuery(query.toString());
+		if(search != null)
+		{
+			hQuery.setParameter("search", new StringBuilder("%").append(search).append("%").toString());
 		}
+		return Integer.parseInt(hQuery.getSingleResult().toString());
 	}
 
 	public Computer get(Long id){
-		String query = "SELECT computer.id, computer.name, introduced, discontinued, computer.company_id, company.name FROM computer LEFT OUTER JOIN company ON company.id = computer.company_id WHERE computer.id=?; ";
-		return  getJdbcTemplate.queryForObject(query, new Object[] {id}, new ComputerMapper());
+		return entityManager.find(Computer.class, id);
 	}
 
 	public void delete(Long id) {
-		String query = "DELETE FROM computer WHERE computer.id = ?";
-		getJdbcTemplate.update(query, new Object[] {id});
+		entityManager.remove(entityManager.find(Computer.class, id));
 	}
 
 	public void update(Computer computer) {
@@ -111,10 +110,7 @@ public class ComputerDao {
 			discontinued = new java.sql.Date(computer
 				.getDiscontinuedDate().toDate().getTime());
 		}
-		
-		String query = "UPDATE computer SET name = ?, introduced = ? ,discontinued = ?, company_id = ? WHERE computer.id = ?";
-		getJdbcTemplate.update(query, new Object[] {computer.getName(), introduced, discontinued, computer.getCompany().getId(), computer.getId()});
-
+		entityManager.merge(computer);
 	}
 
 	public void add(Computer computer) {
@@ -129,8 +125,6 @@ public class ComputerDao {
 					.toDate().getTime());
 		}
 		
-		String query = "INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);";
-		
-		getJdbcTemplate.update(query, new Object[] {computer.getName(), introduced, discontinued, computer.getCompany().getId()});
+		entityManager.persist(computer);
 	}
 }
