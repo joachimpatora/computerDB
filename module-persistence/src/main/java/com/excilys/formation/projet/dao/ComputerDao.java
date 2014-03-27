@@ -5,6 +5,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,85 +17,83 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
 
-@Repository	
+@Repository
 public class ComputerDao {
-	
+
 	@Autowired
 	JdbcTemplate getJdbcTemplate;
-	
+
 	@PersistenceContext(unitName = "entityManagerFactory")
 	private EntityManager entityManager;
-	
+
 	Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-		
+
 	public ComputerDao() {
 		super();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Computer> getAll(Long offset, Long noOfRecords,
 			String searchStr, String orderBy) {
-		StringBuilder query = new StringBuilder("SELECT computer FROM Computer AS computer LEFT JOIN computer.company company");
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Computer> criteria = builder.createQuery(Computer.class);
+		Root<Computer> computerRoot = criteria.from(Computer.class);
+		Join<Computer, Company> company = computerRoot.join("company",
+				JoinType.LEFT);
+		criteria.select(computerRoot);
 
-		if(searchStr != null)
-		{
-			query.append(" WHERE computer.name LIKE :search");
+		if (searchStr != null) {
+			String search = new StringBuilder("%").append(searchStr)
+					.append("%").toString();
+			criteria.where(builder.like(
+					computerRoot.get("name").as(String.class), search));
 		}
-		if (orderBy != null)
-		{
-			query = getOrder(orderBy, query);
+		if (orderBy != null) {
+			if (orderBy.equals("orderByNameAsc")) {
+				criteria.orderBy(builder.asc(computerRoot.get("name")));
+			} else if (orderBy.equals("orderByNameDesc")) {
+				criteria.orderBy(builder.desc(computerRoot.get("name")));
+			} else if (orderBy.equals("orderByIntroAsc")) {
+				criteria.orderBy(builder.asc(computerRoot.get("introduced")));
+			} else if (orderBy.equals("orderByIntroDesc")) {
+				criteria.orderBy(builder.desc(computerRoot.get("introduced")));
+			} else if (orderBy.equals("orderByOutroAsc")) {
+				criteria.orderBy(builder.asc(computerRoot.get("discontinued")));
+			} else if (orderBy.equals("orderByOutroDesc")) {
+				criteria.orderBy(builder.desc(computerRoot.get("discontinued")));
+			} else if (orderBy.equals("orderByCompanyAsc")) {
+				criteria.orderBy(builder.asc(company.get("id")));
+			} else if (orderBy.equals("orderByCompanyDesc")) {
+				criteria.orderBy(builder.desc(company.get("id")));
+			} else {
+				criteria.orderBy(builder.asc(computerRoot.get("id")));
+			}
 		}
-		Query hQuery = entityManager.createQuery(query.toString());
-		if(searchStr != null)
-		{
-			hQuery.setParameter("search", new StringBuilder("%").append(searchStr).append("%").toString());
-		}
-		hQuery.setFirstResult(offset.intValue());
-		hQuery.setMaxResults(noOfRecords.intValue());
-		return hQuery.getResultList();
+		return (List<Computer>) entityManager.createQuery(criteria)
+				.setFirstResult(offset.intValue())
+				.setMaxResults(noOfRecords.intValue()).getResultList();
 	}
-		
-	private StringBuilder getOrder(String orderBy, StringBuilder query)
-	{
-		if (orderBy.equals("orderByNameAsc")) {
-			query.append(" ORDER BY ").append("computer.name ").append(" ASC");
-		} else if (orderBy.equals("orderByNameDesc")){
-			query.append(" ORDER BY ").append("computer.name ").append(" DESC");
-		} else if (orderBy.equals("orderByIntroAsc")) {
-			query.append(" ORDER BY ").append("introduced ").append(" ASC");
-		} else if (orderBy.equals("orderByIntroDesc")) {
-			query.append(" ORDER BY ").append("introduced ").append(" DESC");
-		} else if (orderBy.equals("orderByOutroAsc")) {
-			query.append(" ORDER BY ").append("discontinued ").append(" ASC");
-		} else if (orderBy.equals("orderByOutroDesc")) {
-			query.append(" ORDER BY ").append("discontinued ").append(" DESC");
-		} else if (orderBy.equals("orderByCompanyAsc")) {
-			query.append(" ORDER BY ").append("company_id ").append(" ASC");
-		} else if (orderBy.equals("orderByCompanyDesc")) {
-			query.append(" ORDER BY ").append("company_id ").append(" DESC");
-		} else {
-			query.append(" ORDER BY ").append("computer.id ").append(" ASC");
-		}
-		return query;
-	}
-	
+
 	public int getNbOfComputers(String search) {
-		StringBuilder query = new StringBuilder("SELECT count(*) FROM Computer");
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+		Root<Computer> computerRoot = criteria.from(Computer.class);
+		criteria.select(builder.count(computerRoot));
+		computerRoot.join("company", JoinType.LEFT);
 		if(search != null)
 		{
-			query.append(" WHERE name LIKE :search");
+			String searchStr = new StringBuilder("%").append(search)
+					.append("%").toString();
+			criteria.where(builder.like(
+					computerRoot.get("name").as(String.class), searchStr));
 		}
-		Query hQuery = entityManager.createQuery(query.toString());
-		if(search != null)
-		{
-			hQuery.setParameter("search", new StringBuilder("%").append(search).append("%").toString());
-		}
-		return Integer.parseInt(hQuery.getSingleResult().toString());
+		
+		return entityManager.createQuery(criteria).getSingleResult().intValue();
 	}
 
-	public Computer get(Long id){
+	public Computer get(Long id) {
 		return entityManager.find(Computer.class, id);
 	}
 
@@ -101,14 +104,14 @@ public class ComputerDao {
 	public void update(Computer computer) {
 		java.sql.Date introduced = null;
 		java.sql.Date discontinued = null;
-		
-		if (computer.getIntroducedDate()!=null) {
-			introduced = new java.sql.Date(computer
-				.getIntroducedDate().toDate().getTime());
+
+		if (computer.getIntroducedDate() != null) {
+			introduced = new java.sql.Date(computer.getIntroducedDate()
+					.toDate().getTime());
 		}
-		if(computer.getDiscontinuedDate() != null) {
-			discontinued = new java.sql.Date(computer
-				.getDiscontinuedDate().toDate().getTime());
+		if (computer.getDiscontinuedDate() != null) {
+			discontinued = new java.sql.Date(computer.getDiscontinuedDate()
+					.toDate().getTime());
 		}
 		entityManager.merge(computer);
 	}
@@ -124,7 +127,7 @@ public class ComputerDao {
 			discontinued = new java.sql.Date(computer.getDiscontinuedDate()
 					.toDate().getTime());
 		}
-		
+
 		entityManager.persist(computer);
 	}
 }

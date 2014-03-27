@@ -185,10 +185,10 @@ public class ComputerListController {
 			@ModelAttribute("ComputerDto") @Valid ComputerDto computerdto,
 			BindingResult result) {
 		ModelAndView modelAndView = new ModelAndView();
-		if (!result.hasErrors()) {
-			modelAndView.setViewName("redirect:dashboard");
-			if (("Edit".equals(updateButton))
-					|| ("Edition".equals(updateButton))) {
+		modelAndView.setViewName("redirect:dashboard");
+		if (("Edit".equals(updateButton))
+				|| ("Edition".equals(updateButton))) {
+			if (!result.hasErrors()) {
 				logger.info("Displaying dashboard");
 				Computer computer = new Computer();
 				computer = computerdto.fromDto(computerdto);
@@ -196,25 +196,26 @@ public class ComputerListController {
 				computerService.update(computer);
 				modelAndView.addObject("message", "Modification effectuée");
 			} else {
-				try {
-					computerService.delete(hiddenid);
-				} catch (Exception e) {
-					logger.error("Delete raté", e);
+				modelAndView.setViewName("editComputer");
+				modelAndView.addObject("computer", computerdto);
+				List<Company> liste = companyService.getAll();
+				List<CompanyDto> listdto = new ArrayList<CompanyDto>();
+				for (Company company : liste) {
+					CompanyDto compdto = new CompanyDto();
+					compdto = compdto.toDto(company);
+					listdto.add(compdto);
 				}
-				modelAndView.addObject("message", "Suppression effectuée");
+				modelAndView.addObject("listOfCompanies", listdto);
 			}
 		} else {
-			modelAndView.setViewName("editComputer");
-			modelAndView.addObject("computer", computerdto);
-			List<Company> liste = companyService.getAll();
-			List<CompanyDto> listdto = new ArrayList<CompanyDto>();
-			for (Company company : liste) {
-				CompanyDto compdto = new CompanyDto();
-				compdto = compdto.toDto(company);
-				listdto.add(compdto);
+			try {
+				computerService.delete(hiddenid);
+			} catch (Exception e) {
+				logger.error("Delete raté", e);
 			}
-			modelAndView.addObject("listOfCompanies", listdto);
+			modelAndView.addObject("message", "Suppression effectuée");
 		}
+		
 		return modelAndView;
 	}
 }
