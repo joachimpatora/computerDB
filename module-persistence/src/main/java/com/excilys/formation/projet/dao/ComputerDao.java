@@ -40,7 +40,7 @@ public class ComputerDao {
 		query.from(computer).leftJoin(computer.company, company);
 		if(searchStr != null)
 		{
-			query.where(computer.name.like(searchStr));
+			query.where(computer.name.like("%"+searchStr+"%"));
 		}
 		if(orderBy != null)
 		{
@@ -72,7 +72,7 @@ public class ComputerDao {
 		JPAQuery query = new JPAQuery(entityManager);
 		query.from(computer);		
 		if (search != null) {
-			query.where(computer.name.like(search));
+			query.where(computer.name.like("%"+search+"%"));
 		}
 		return (int) query.count();
 	}
