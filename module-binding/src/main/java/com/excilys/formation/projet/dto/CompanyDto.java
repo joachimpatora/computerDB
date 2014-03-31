@@ -2,8 +2,6 @@ package com.excilys.formation.projet.dto;
 
 import org.springframework.stereotype.Component;
 
-import com.excilys.formation.projet.om.Company;
-
 @Component
 public class CompanyDto {
 
@@ -31,20 +29,6 @@ public class CompanyDto {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	public Company fromDto(CompanyDto companydto) {
-		Company company = new Company();
-		company.setId(companydto.getId());
-		company.setName(companydto.getName());
-		return company;
-	}
-	
-	public CompanyDto toDto(Company company) {
-		CompanyDto companydto = new CompanyDto();
-		companydto.setId(company.getId());
-		companydto.setName(company.getName());
-		return companydto;
 	}
 	
 	@Override

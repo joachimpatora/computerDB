@@ -21,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.formation.projet.dto.CompanyDto;
 import com.excilys.formation.projet.dto.ComputerDto;
+import com.excilys.formation.projet.dto.mapper.CompanyDtoMapper;
+import com.excilys.formation.projet.dto.mapper.ComputerDtoMapper;
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.om.ComputerListWrapper;
@@ -56,12 +58,11 @@ public class ComputerListController {
 			@RequestParam(value = "search", required = false) String searchStr,
 			@RequestParam(value = "main", required = false) String main,
 			@RequestParam(value = "message", required = false) String message) {
-
+		
 		Map<String, String> queryParameters = new HashMap<>();
 		Long recordsPerPage = RECORDS_PER_PAGE;
 		List<ComputerDto> listdto = new ArrayList<ComputerDto>();
-
-		ComputerListWrapper clw = new ComputerListWrapper();
+		ComputerListWrapper clw;
 
 		logger.info("Displaying dashboard");
 
@@ -78,19 +79,14 @@ public class ComputerListController {
 			queryParameters.put("search", searchStr);
 		}
 
-		try {
-			clw = computerService.getAll((pageNb - 1) * recordsPerPage,
-					recordsPerPage, searchStr, orderBy);
-			for (Object comp : clw.getComputerList()) {
-				ComputerDto compdto = new ComputerDto();
-				listdto.add(compdto.toDto((Computer) comp));
-			}
-			modelAndView.addObject("listOfComputers", listdto);
-		} catch (Exception e) {
-			logger.error("Mauvaise récupération des ordinateurs", e);
+		clw = computerService.findAllByName((pageNb - 1) * recordsPerPage,
+				recordsPerPage, searchStr, orderBy);
+		for (Object comp : clw.getComputerList()) {
+			listdto.add(ComputerDtoMapper.toDto((Computer) comp));
 		}
+		modelAndView.addObject("listOfComputers", listdto);
 
-		int noOfRecords = computerService.getCount(searchStr);
+		int noOfRecords = clw.getCount();
 		int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 		modelAndView.addObject("queryParameters", queryParameters);
 		modelAndView.addObject("totalNbOfComp", noOfRecords);
@@ -110,8 +106,7 @@ public class ComputerListController {
 			List<Company> liste = companyService.getAll();
 			List<CompanyDto> listdto = new ArrayList<CompanyDto>();
 			for (Company company : liste) {
-				CompanyDto compdto = new CompanyDto();
-				listdto.add(compdto.toDto(company));
+				listdto.add(CompanyDtoMapper.toDto(company));
 			}
 			m.addAttribute("ComputerDto", new ComputerDto());
 			modelAndView.addObject("listOfCompanies", listdto);
@@ -128,15 +123,13 @@ public class ComputerListController {
 		try {
 			Computer computer = computerService.get(compId);
 			ComputerDto computerdto = new ComputerDto();
-			computerdto = computerdto.toDto(computer);
+			computerdto = ComputerDtoMapper.toDto(computer);
 			modelAndView.addObject("computer", computerdto);
 
 			List<Company> liste = companyService.getAll();
 			List<CompanyDto> listdto = new ArrayList<CompanyDto>();
 			for (Company company : liste) {
-				CompanyDto compdto = new CompanyDto();
-				compdto = compdto.toDto(company);
-				listdto.add(compdto);
+				listdto.add(CompanyDtoMapper.toDto(company));
 			}
 			m.addAttribute("ComputerDto", computerdto);
 			modelAndView.addObject("listOfCompanies", listdto);
@@ -155,9 +148,9 @@ public class ComputerListController {
 		if (!result.hasErrors()) {
 			logger.info("Displaying dashboard");
 			Computer computer = new Computer();
-			computer = computerdto.fromDto(computerdto);
+			computer = ComputerDtoMapper.fromDto(computerdto);
 			try {
-				computerService.add(computer);
+				computerService.create(computer);
 			} catch (Exception e) {
 				logger.error("Mauvais Update", e);
 			}
@@ -169,9 +162,7 @@ public class ComputerListController {
 			List<Company> liste = companyService.getAll();
 			List<CompanyDto> listdto = new ArrayList<CompanyDto>();
 			for (Company company : liste) {
-				CompanyDto compdto = new CompanyDto();
-				compdto = compdto.toDto(company);
-				listdto.add(compdto);
+				listdto.add(CompanyDtoMapper.toDto(company));
 			}
 			modelAndView.addObject("listOfCompanies", listdto);
 		}
@@ -191,7 +182,7 @@ public class ComputerListController {
 			if (!result.hasErrors()) {
 				logger.info("Displaying dashboard");
 				Computer computer = new Computer();
-				computer = computerdto.fromDto(computerdto);
+				computer = ComputerDtoMapper.fromDto(computerdto);
 				computer.setId(hiddenid);
 				computerService.update(computer);
 				modelAndView.addObject("message", "Modification effectuée");
@@ -201,9 +192,7 @@ public class ComputerListController {
 				List<Company> liste = companyService.getAll();
 				List<CompanyDto> listdto = new ArrayList<CompanyDto>();
 				for (Company company : liste) {
-					CompanyDto compdto = new CompanyDto();
-					compdto = compdto.toDto(company);
-					listdto.add(compdto);
+					listdto.add(CompanyDtoMapper.toDto(company));
 				}
 				modelAndView.addObject("listOfCompanies", listdto);
 			}

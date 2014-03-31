@@ -4,7 +4,7 @@
 
 	<groupId>com.excilys.formation.projet</groupId>
 	<artifactId>computerDB-parent</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>3.4.0-RELEASE</version>
 	<packaging>pom</packaging>
 
 	<name>computerDB-parent</name>
@@ -40,6 +40,7 @@
 		<ch.qos.logback.version>1.1.1</ch.qos.logback.version>
 		<hibernate-core.version>4.3.4.Final</hibernate-core.version>
 		<mysema.querydsl.version>3.3.2</mysema.querydsl.version>
+		<spring-data-jpa.version>1.5.1.RELEASE</spring-data-jpa.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -90,6 +91,12 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
 				<version>${org.springframework.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-jpa</artifactId>
+				<version>${spring-data-jpa.version}</version>
 			</dependency>
 
 			<dependency>

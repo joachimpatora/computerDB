@@ -17,7 +17,7 @@ import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
 
 @Component
-public class ComputerDto implements MessageSourceAware {
+public class ComputerDto {
 
 	private Long id;
 	@NotNull
@@ -33,12 +33,6 @@ public class ComputerDto implements MessageSourceAware {
 	private String discontinuedDate;
 	private String companyname;
 	private Long companyid;
-
-	private static MessageSource messageSource;
-
-	public void setMessageSource(MessageSource messageSource) {
-		ComputerDto.messageSource = messageSource;
-	}
 
 	public ComputerDto(Long id, String name, String introducedDate,
 			String discontinuedDate, String companyname, Long companyid) {
@@ -101,66 +95,5 @@ public class ComputerDto implements MessageSourceAware {
 
 	public void setCompanyid(Long companyid) {
 		this.companyid = companyid;
-	}
-
-	public Computer fromDto(ComputerDto computerdto) {
-		Computer computer = new Computer();
-		computer.setId(computerdto.getId());
-		computer.setName(computerdto.getName());
-		Locale locale = LocaleContextHolder.getLocale();
-		String dateFormat = messageSource.getMessage("date.format", null,
-				locale);
-		DateTimeFormatter dateStringFormat = DateTimeFormat
-				.forPattern(dateFormat);
-
-		computer.setIntroducedDate(LocalDate.parse(computerdto.introducedDate,
-				dateStringFormat));
-		computer.setDiscontinuedDate(LocalDate.parse(
-				computerdto.discontinuedDate, dateStringFormat));
-
-		Company company = new Company();
-		company.setId(computerdto.getCompanyid());
-		company.setName(computerdto.getCompanyname());
-		computer.setCompany(company);
-
-		return computer;
-	}
-
-	public ComputerDto toDto(Computer computer) {
-		Locale locale = LocaleContextHolder.getLocale();
-		String dateFormat = messageSource.getMessage("date.format", null,
-				locale);
-
-		ComputerDto computerdto = new ComputerDto();
-		computerdto.setId(computer.getId());
-		computerdto.setName(computer.getName());
-
-		if(computer.getIntroducedDate()!= null)
-		{
-			computerdto.setIntroducedDate(computer.getIntroducedDate().toString(
-				dateFormat, locale));
-		}
-		else
-		{
-			computerdto.setIntroducedDate(null);
-		}
-		if(computer.getDiscontinuedDate() != null)
-		{
-			computerdto.setDiscontinuedDate(computer.getDiscontinuedDate()
-				.toString(dateFormat, locale));
-		}
-		else
-		{
-			computerdto.setDiscontinuedDate(null);
-		}
-		if (computer.getCompany() != null) {
-			computerdto.setCompanyid(computer.getCompany().getId());
-			computerdto.setCompanyname(computer.getCompany().getName());
-		}
-		else {
-			computerdto.setCompanyid(null);
-			computerdto.setCompanyname(null);
-		}
-		return computerdto;
 	}
 }
