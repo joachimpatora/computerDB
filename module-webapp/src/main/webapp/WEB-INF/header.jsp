@@ -15,6 +15,7 @@
 <body>
 	<header class="topbar">
 		<h1 class="fill">
-			<a href="dashboard"><spring:message code="label.title"/></a>
+			<a href="dashboard"><spring:message code="label.title"/></a><a href="<c:url value="/j_spring_security_logout" />" id="logoutSecurity" class="btn danger" style="float: right"> Logout</a>
 		</h1>
+		
 	</header>

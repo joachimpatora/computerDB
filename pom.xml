@@ -4,7 +4,7 @@
 
 	<groupId>com.excilys.formation.projet</groupId>
 	<artifactId>computerDB-parent</artifactId>
-	<version>3.5.0-RELEASE</version>
+	<version>3.6.0-RELEASE</version>
 	<packaging>pom</packaging>
 
 	<name>computerDB-parent</name>
@@ -63,11 +63,11 @@
 		<mysema.querydsl.version>3.3.2</mysema.querydsl.version>
 
 		<!-- Modules -->
-		<module-binding.version>3.5.0-RELEASE</module-binding.version>
-		<module-core.version>3.5.0-RELEASE</module-core.version>
-		<module-persistence.version>3.5.0-RELEASE</module-persistence.version>
-		<module-service.version>3.5.0-RELEASE</module-service.version>
-		<module-webapp.version>3.5.0-RELEASE</module-webapp.version>
+		<module-binding.version>3.6.0-RELEASE</module-binding.version>
+		<module-core.version>3.6.0-RELEASE</module-core.version>
+		<module-persistence.version>3.6.0-RELEASE</module-persistence.version>
+		<module-service.version>3.6.0-RELEASE</module-service.version>
+		<module-webapp.version>3.6.0-RELEASE</module-webapp.version>
 
 		<!-- Tomcat -->
 		<tomcat.version>8.0.3</tomcat.version>

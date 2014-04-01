@@ -17,10 +17,9 @@
 
 	<authentication-manager>
 		<authentication-provider>
-		    <password-encoder ref="bcryptEncoder"/>
-			<user-service>
-				<user name="admin" password="$2a$10$alQLkNoRjiNf.JTfjcB4Z.tR742CNk7SS4bqcYQimfKlgLaMD8wcy" authorities="ROLE_USER, ROLE_ADMIN" />
-			</user-service>
+		    <jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="select username, password, id_role from user where username=?"
+				authorities-by-username-query="select u.username, ur.role_name from user u, role ur where u.id_role = ur.id and u.username =?  " />
 		</authentication-provider>
 	</authentication-manager>
 </beans:beans>

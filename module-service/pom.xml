@@ -4,7 +4,7 @@
 	<parent>
 	    <groupId>com.excilys.formation.projet</groupId>
 		<artifactId>computerDB-parent</artifactId>
-		<version>3.5.0-RELEASE</version>
+		<version>3.6.0-RELEASE</version>
 	</parent>
 	<groupId>module-service</groupId>
 	<artifactId>module-service</artifactId>

@@ -1,8 +1,6 @@
-drop table if exists monitorDb;
-
-create table monitorDb (
-  id                        bigint not null auto_increment,
-  error_code                bigint,
-  message                   longtext,
-  constraint pk_monitorDb primary key (id))
-;
+create table user(
+id                        bigint not null auto_increment,
+username                      varchar(255),
+password                      varchar(255),
+id_role                       bigint,
+constraint pk_user primary key (id))
