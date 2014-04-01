@@ -2,33 +2,51 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	    <groupId>com.excilys.formation.projet</groupId>
+		<groupId>com.excilys.formation.projet</groupId>
 		<artifactId>computerDB-parent</artifactId>
-		<version>3.4.0-RELEASE</version>
+		<version>3.5.0-RELEASE</version>
 	</parent>
 	<artifactId>module-webapp</artifactId>
 	<packaging>war</packaging>
 	<name>module-webapp Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
+		
+		<dependency>
+			<groupId>module-service</groupId>
+			<artifactId>module-service</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.tomcat</groupId>
+		    <artifactId>tomcat-catalina</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<!-- Spring security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-expression</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-web</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.excilys.formation.projet</groupId>
-			<artifactId>module-service</artifactId>
-			<version>3.4.0-RELEASE</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.excilys.formation.projet</groupId>
-			<artifactId>module-binding</artifactId>
-			<version>3.4.0-RELEASE</version>
-		</dependency>
-		
+
 		<!-- Servlet dependencies -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -48,6 +66,10 @@
 			<artifactId>jstl</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 	</dependencies>
-	
+
 </project>

@@ -2,20 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	    <groupId>com.excilys.formation.projet</groupId>
+		<groupId>com.excilys.formation.projet</groupId>
 		<artifactId>computerDB-parent</artifactId>
-		<version>3.4.0-RELEASE</version>
+		<version>3.5.0-RELEASE</version>
 	</parent>
+	<groupId>module-binding</groupId>
 	<artifactId>module-binding</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.excilys.formation.projet</groupId>
+			<groupId>module-core</groupId>
 			<artifactId>module-core</artifactId>
-			<version>3.4.0-RELEASE</version>
 		</dependency>
 		<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

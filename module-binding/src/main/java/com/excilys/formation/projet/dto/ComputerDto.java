@@ -1,20 +1,9 @@
 package com.excilys.formation.projet.dto;
 
-import java.util.Locale;
-
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceAware;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-
-import com.excilys.formation.projet.om.Company;
-import com.excilys.formation.projet.om.Computer;
 
 @Component
 public class ComputerDto {

@@ -4,7 +4,7 @@
 
 	<groupId>com.excilys.formation.projet</groupId>
 	<artifactId>computerDB-parent</artifactId>
-	<version>3.4.0-RELEASE</version>
+	<version>3.5.0-RELEASE</version>
 	<packaging>pom</packaging>
 
 	<name>computerDB-parent</name>
@@ -19,31 +19,108 @@
 	</modules>
 
 	<properties>
+
 		<java-version>1.7</java-version>
 
+		<!-- Logs -->
 		<org.slf4j-version>1.7.6</org.slf4j-version>
 		<logback-core.version>1.1.1</logback-core.version>
+		<jcl-over-slf4j.version>1.7.6</jcl-over-slf4j.version>
+		<ch.qos.logback.version>1.1.1</ch.qos.logback.version>
 
+		<!-- Jstl and Taglibs -->
 		<taglibs.version>1.1.2</taglibs.version>
+		<jstl.version>1.2</jstl.version>
+
+		<!-- Connections -->
 		<bonecp.version>0.8.0.RELEASE</bonecp.version>
 		<mysql-connector-java.version>5.0.8</mysql-connector-java.version>
-		<jstl.version>1.2</jstl.version>
+
+		<!-- Servlet -->
 		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
 		<jsp-api.version>2.1</jsp-api.version>
+
+		<!-- Spring -->
 		<org.springframework.version>4.0.2.RELEASE</org.springframework.version>
-		<org.hibernate.version>5.0.1.Final</org.hibernate.version>
-		<joda-time.version>2.3</joda-time.version>
-		<javax.validation.version>1.1.0.Final</javax.validation.version>
-		<jadira.version>3.0.0.CR1</jadira.version>
-		<jcl-over-slf4j.version>1.7.0</jcl-over-slf4j.version>
-		<hibernate-persistence.version>4.2.10.Final</hibernate-persistence.version>
-		<ch.qos.logback.version>1.1.1</ch.qos.logback.version>
-		<hibernate-core.version>4.3.4.Final</hibernate-core.version>
-		<mysema.querydsl.version>3.3.2</mysema.querydsl.version>
 		<spring-data-jpa.version>1.5.1.RELEASE</spring-data-jpa.version>
+		<spring-security.version>3.2.3.RELEASE</spring-security.version>
+
+		<!-- Hibernate -->
+		<org.hibernate.version>5.0.1.Final</org.hibernate.version>
+		<hibernate-persistence.version>4.2.10.Final</hibernate-persistence.version>
+		<hibernate-core.version>4.3.4.Final</hibernate-core.version>
+
+		<!-- Time -->
+		<joda-time.version>2.3</joda-time.version>
+
+		<!-- Validation -->
+		<javax.validation.version>1.1.0.Final</javax.validation.version>
+
+		<!-- Jadira -->
+		<jadira.version>3.1.0.GA</jadira.version>
+
+		<!-- QueryDSL -->
+		<mysema.querydsl.version>3.3.2</mysema.querydsl.version>
+
+		<!-- Modules -->
+		<module-binding.version>3.5.0-RELEASE</module-binding.version>
+		<module-core.version>3.5.0-RELEASE</module-core.version>
+		<module-persistence.version>3.5.0-RELEASE</module-persistence.version>
+		<module-service.version>3.5.0-RELEASE</module-service.version>
+		<module-webapp.version>3.5.0-RELEASE</module-webapp.version>
+
+		<!-- Tomcat -->
+		<tomcat.version>8.0.3</tomcat.version>
+
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-catalina</artifactId>
+				<version>${tomcat.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<!-- Modules -->
+			<dependency>
+				<groupId>module-binding</groupId>
+				<artifactId>module-binding</artifactId>
+				<version>${module-binding.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>module-core</groupId>
+				<artifactId>module-core</artifactId>
+				<version>${module-core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>module-persistence</groupId>
+				<artifactId>module-persistence</artifactId>
+				<version>${module-persistence.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>module-service</groupId>
+				<artifactId>module-service</artifactId>
+				<version>${module-service.version}</version>
+			</dependency>
+
+			<!-- Spring Security -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+
+			<!-- Time -->
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
@@ -68,13 +145,25 @@
 				<artifactId>spring-webmvc</artifactId>
 				<version>${org.springframework.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${org.springframework.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${org.springframework.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
 				<version>${org.springframework.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-orm</artifactId>
@@ -92,7 +181,7 @@
 				<artifactId>spring-core</artifactId>
 				<version>${org.springframework.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-jpa</artifactId>
@@ -213,22 +302,6 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.mysema.maven</groupId>
-				<artifactId>apt-maven-plugin</artifactId>
-				<version>1.1.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/generated-sources/java</outputDirectory>
-							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

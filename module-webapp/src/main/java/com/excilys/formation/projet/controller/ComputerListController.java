@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,6 +40,8 @@ public class ComputerListController {
 	private ComputerService computerService;
 	@Autowired
 	private CompanyService companyService;
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
 
 	private final Long RECORDS_PER_PAGE = 15L;
 

@@ -14,9 +14,9 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 http://www.springframework.org/schema/data/jpa
 http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
+    <import resource="classpath:binding-context.xml" />
 	<context:component-scan base-package="com.excilys.formation.projet.dao" />
 	<mvc:annotation-driven />
-	<!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
 
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">

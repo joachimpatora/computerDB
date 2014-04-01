@@ -18,7 +18,7 @@ public class CompanyService {
 	
 	public CompanyService()
 	{
-	
+		super();
 	}
 	
 	public List<Company> getAll() {

@@ -4,23 +4,18 @@
 	<parent>
 	    <groupId>com.excilys.formation.projet</groupId>
 		<artifactId>computerDB-parent</artifactId>
-		<version>3.4.0-RELEASE</version>
+		<version>3.5.0-RELEASE</version>
 	</parent>
+	<groupId>module-service</groupId>
 	<artifactId>module-service</artifactId>
 	<dependencies>
 		<dependency>
+			<groupId>module-persistence</groupId>
+			<artifactId>module-persistence</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.excilys.formation.projet</groupId>
-			<artifactId>module-core</artifactId>
-			<version>3.4.0-RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>com.excilys.formation.projet</groupId>
-			<artifactId>module-persistence</artifactId>
-			<version>3.4.0-RELEASE</version>
 		</dependency>
 	</dependencies>
 </project>
